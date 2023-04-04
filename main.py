@@ -16,8 +16,8 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 # Click "Open user guide" on the EV3 extension tab for more information.
-TOUCH_SENSOR_PORT
-COLOR_SENSOR_PORT
+TOUCH_SENSOR_PORT = 0
+COLOR_SENSOR_PORT = 0
 
 # Create your objects here.
 ev3 = EV3Brick()
