@@ -57,9 +57,11 @@ rotationMotor.control.limits(speed=60, acceleration=120)
 
 
 def init():
-    clawMotor.run_until_stalled(60,then=Stop.COAST)
+    clawMotor.run_until_stalled(-60,then=Stop.COAST,duty_limit=25)
+    print("claw")
+    
     clawMotor.reset_angle(0)
-    clawMotor.run_target(60,-60)
+    clawMotor.run_target(60,55)
     
     craneMotor.run_time(-60, 3500)
     craneMotor.run(20)
@@ -77,12 +79,13 @@ def grip_item():
 
 def pick_up():
     initialAngle = craneMotor.angle()
-    clawMotor.run_target(60,-90,wait=False)
+    clawMotor.run_target(60,55,wait=False)
     craneMotor.run_until_stalled(60,then=Stop.COAST,duty_limit=100/CRANE_GEAR_RATIO)
-    print("hello")
+    clawMotor.run_until_stalled(-60,then=Stop.HOLD,duty_limit=50)
+    
     
     craneMotor.run_target(30, initialAngle)
-    print("world")
+    
 
 
 def main():
