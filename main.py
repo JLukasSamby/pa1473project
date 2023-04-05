@@ -34,9 +34,9 @@ craneMotor.control.limits(speed=60, acceleration=120)
 rotationMotor.control.limits(speed=60, acceleration=120)
 
 #code under here.
-bigGear = 40
-smallGear = 8
-gearRatio = bigGear/smallGear
+BIG_GEAR = 40
+SMALL_GEAR = 8
+GEAR_RATIO = BIG_GEAR/SMALL_GEAR
 
 
 
@@ -46,7 +46,7 @@ craneMotor.run(20)
 while colorSensor.reflection() < 15:
     print(colorSensor.reflection())
     wait(10)
-craneMotor.reset_angle(12*gearRatio)
+craneMotor.reset_angle(12*GEAR_RATiO)
 craneMotor.run_target(45,0)
 while True:
     craneMotor.hold()
