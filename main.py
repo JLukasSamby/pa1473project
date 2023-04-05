@@ -33,11 +33,20 @@ rotationMotor = Motor(ROTATION_MOTOR_PORT)
 craneMotor.control.limits(speed=60, acceleration=120)
 rotationMotor.control.limits(speed=60, acceleration=120)
 
-craneMotor.run_time(-30, 1000)
-craneMotor.run(15)
-while colorSensor.reflection() < 32:
-    wait(10)
-craneMotor.reset_angle(0)
-craneMotor.hold()
+#code under here.
+bigGear = 40
+smallGear = 8
+gearRatio = bigGear/smallGear
 
-# Write your program here.
+
+
+craneMotor.run_time(-60, 3000)
+craneMotor.run(20)
+
+while colorSensor.reflection() < 15:
+    print(colorSensor.reflection())
+    wait(10)
+craneMotor.reset_angle(12*gearRatio)
+craneMotor.run_target(45,0)
+while True:
+    craneMotor.hold()
