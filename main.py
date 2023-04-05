@@ -35,6 +35,9 @@ BIG_GEAR_TOOTHCOUNT = 40
 SMALL_GEAR_TOOTHCOUNT = 8
 CRANE_GEAR_RATIO = BIG_GEAR_TOOTHCOUNT / SMALL_GEAR_TOOTHCOUNT
 
+# Angle constants
+COLOR_TO_FLOOR_ANGLE = 30 * CRANE_GEAR_RATIO
+
 # ----------------------------------------
 # Objects
 # ----------------------------------------
@@ -64,8 +67,21 @@ def init():
     craneMotor.run_target(45, 0)
 
 
+def grip_item():
+    pass
+
+
+def pick_up():
+    initialAngle = craneMotor.angle()
+    craneMotor.run_target(30, 0)
+    craneMotor.run_target(60, COLOR_TO_FLOOR_ANGLE, wait=True)
+    grip_item()
+    craneMotor.run_target(30, initialAngle)
+
+
 def main():
     init()
+    pick_up()
     while True:
         craneMotor.hold()
 
