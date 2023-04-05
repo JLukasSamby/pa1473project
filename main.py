@@ -1,5 +1,5 @@
 #!/usr/bin/env pybricks-micropython
-from funcs.py import *
+#from funcs.py import *
 
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (
@@ -57,7 +57,11 @@ rotationMotor.control.limits(speed=60, acceleration=120)
 
 
 def init():
-    craneMotor.run_time(-60, 3000)
+    clawMotor.run_until_stalled(60,then=Stop.COAST)
+    clawMotor.reset_angle(0)
+    clawMotor.run_target(60,-60)
+    
+    craneMotor.run_time(-60, 3500)
     craneMotor.run(20)
 
     while colorSensor.reflection() < 15:
@@ -73,10 +77,12 @@ def grip_item():
 
 def pick_up():
     initialAngle = craneMotor.angle()
-    craneMotor.run_target(30, 0)
-    craneMotor.run_target(60, COLOR_TO_FLOOR_ANGLE, wait=True)
-    grip_item()
+    clawMotor.run_target(60,-90,wait=False)
+    craneMotor.run_until_stalled(60,then=Stop.COAST,duty_limit=100/CRANE_GEAR_RATIO)
+    print("hello")
+    
     craneMotor.run_target(30, initialAngle)
+    print("world")
 
 
 def main():
