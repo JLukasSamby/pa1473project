@@ -1,4 +1,6 @@
 #!/usr/bin/env pybricks-micropython
+from funcs.py import *
+
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (
     Motor,
@@ -46,7 +48,7 @@ craneMotor.run(20)
 while colorSensor.reflection() < 15:
     print(colorSensor.reflection())
     wait(10)
-craneMotor.reset_angle(12*GEAR_RATiO)
+craneMotor.reset_angle(12*gearRatio)
 craneMotor.run_target(45,0)
 while True:
     craneMotor.hold()
