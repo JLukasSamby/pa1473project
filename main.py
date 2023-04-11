@@ -1,5 +1,5 @@
 #!/usr/bin/env pybricks-micropython
-#from funcs.py import *
+# from funcs.py import *
 
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (
@@ -41,6 +41,7 @@ COLOR_TO_FLOOR_ANGLE = 30 * CRANE_GEAR_RATIO
 # ----------------------------------------
 # Objects
 # ----------------------------------------
+
 ev3 = EV3Brick()
 touchSensor = TouchSensor(TOUCH_SENSOR_PORT)
 colorSensor = ColorSensor(COLOR_SENSOR_PORT)
@@ -57,12 +58,11 @@ rotationMotor.control.limits(speed=60, acceleration=120)
 
 
 def init():
-    clawMotor.run_until_stalled(-60,then=Stop.COAST,duty_limit=25)
-    print("claw")
-    
+    clawMotor.run_until_stalled(-60, then=Stop.COAST, duty_limit=25)
+
     clawMotor.reset_angle(0)
-    clawMotor.run_target(60,55)
-    
+    clawMotor.run_target(60, 55)
+
     craneMotor.run_time(-60, 3500)
     craneMotor.run(20)
 
@@ -79,13 +79,17 @@ def grip_item():
 
 def pick_up():
     initialAngle = craneMotor.angle()
-    clawMotor.run_target(60,55,wait=False)
-    craneMotor.run_until_stalled(60,then=Stop.COAST,duty_limit=100/CRANE_GEAR_RATIO)
-    clawMotor.run_until_stalled(-60,then=Stop.HOLD,duty_limit=50)
-    
-    
+    clawMotor.run_target(60, 55, wait=False)
+    craneMotor.run_until_stalled(60, then=Stop.COAST, duty_limit=100 / CRANE_GEAR_RATIO)
+    clawMotor.run_until_stalled(-60, then=Stop.HOLD, duty_limit=50)
     craneMotor.run_target(30, initialAngle)
-    
+
+
+def drop_item():
+    initialAngle = craneMotor.angle()
+    craneMotor.run_until_stalled(60, then=Stop.COAST, duty_limit=100 / CRANE_GEAR_RATIO)
+    clawMotor.run_target(60)
+    craneMotor.run_target(30, initialAngle)
 
 
 def main():
