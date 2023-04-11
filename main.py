@@ -17,7 +17,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 # Click "Open user guide" on the EV3 extension tab for more information.
-
+ 
 # ----------------------------------------
 # Constants
 # ----------------------------------------
@@ -47,6 +47,7 @@ ROTATION_GEAR_RATIO = ROTATION_BIG_GEAR_TOOTHCOUNT / ROTATION_SMALL_GEAR_TOOTHCO
 
 # Angle constants
 COLOR_TO_FLOOR_ANGLE = 30 * CRANE_GEAR_RATIO
+CLAW_HEIGHT_IN_DEGREES_OF_CRANE_ROTATION = 13
 
 # Color constants
 BASE_ANGLE = 190
@@ -92,9 +93,8 @@ def init():
     craneMotor.run(LOW_SPEED)
 
     while colorSensor.reflection() < COLOR_ZERO:
-        print(colorSensor.reflection())
-        wait(5)
-    craneMotor.reset_angle(12 * CRANE_GEAR_RATIO)
+        wait(2)
+    craneMotor.reset_angle(CLAW_HEIGHT_IN_DEGREES_OF_CRANE_ROTATION * CRANE_GEAR_RATIO)
     craneMotor.run_target(MEDIUM_SPEED, 0)
 
     # Initialize rotation motor
@@ -120,32 +120,53 @@ def get_color():
     return colorSensor.color()
 
 
-# REfactor to use a "do_at" function taking a function and an angle. To remove duplicated code
+def get_color_rgb():
+    return colorSensor.rgb()
 
-def drop_item_at(angle):
+
+def do_at(angle, func, **args):
     initialAngle = rotationMotor.angle()
     rotationMotor.run_target(HIGH_SPEED, -ROTATION_GEAR_RATIO * angle)
-    drop_item()
+    func(args)
     rotationMotor.run_target(HIGH_SPEED, ROTATION_GEAR_RATIO * initialAngle)
+
+
+def drop_item_at(angle):
+    do_at(angle, drop_item)
 
 
 def pick_item_at(angle):
-    initialAngle = rotationMotor.angle()
-    rotationMotor.run_target(HIGH_SPEED, ROTATION_GEAR_RATIO * angle)
-    drop_item()
-    rotationMotor.run_target(HIGH_SPEED, ROTATION_GEAR_RATIO * initialAngle)
+    do_at(angle, pick_item)
 
 
-def drop_item_by_color():
+def drop_item_by_color(color_dictionary=COLOR_DICTIONARY):
     pick_item()
     color = get_color()
-    angle = COLOR_DICTIONARY[color]
+    angle = color_dictionary[color]
     drop_item_at(angle)
+
+
+def user_generate_color_dictionary():
+    print(
+"""
+Select one of the colors:
+Black, Blue, Green, Yellow, Red, White, Brown.
+For each position...\
+"""
+    )
+    COLORS = {"black":Color.BLACK,"blue":Color.BLUE,"green":Color.GREEN,"yellow":Color.YELLOW,"red":Color.RED,"white":Color.WHITE,"brown":Color.BROWN}
+    color_dictionary = dict()
+    for i in range(3):
+        print()
+        color = input("Select color for position " + str(i+1) + ": ").lower()
+        angle = float(input("Select angle for position " + str(i+1) + ": "))
+        color_dictionary[COLORS[color]] = angle
+    return color_dictionary
 
 
 def main():
     init()
-    drop_item_by_color()
+    user_generate_color_dictionary()
     while True:
         craneMotor.hold()
 
