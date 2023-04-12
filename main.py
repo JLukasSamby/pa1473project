@@ -16,7 +16,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 # Click "Open user guide" on the EV3 extension tab for more information.
- 
+
 # ----------------------------------------
 # Constants
 # ----------------------------------------
@@ -69,6 +69,10 @@ COLOR_DICTIONARY = {
 
 # Duty
 MAX_DUTY = 100
+
+# Color dictionary function
+MIN_NUMBER_POSITIONS = 3
+STRING_TO_COLOR_DICTIONARY = {"black":Color.BLACK,"blue":Color.BLUE,"green":Color.GREEN,"yellow":Color.YELLOW,"red":Color.RED,"white":Color.WHITE,"brown":Color.BROWN}
 
 # ----------------------------------------
 # Objects
@@ -173,15 +177,34 @@ def user_generate_color_dictionary():
 Select one of the colors:
 Black, Blue, Green, Yellow, Red, White, Brown.
 Select an angle in [0, 180].
+Select number of positions (minimum 3).
 For each position...\
 """
     )
-    STRING_TO_COLOR_DICTIONARY = {"black":Color.BLACK,"blue":Color.BLUE,"green":Color.GREEN,"yellow":Color.YELLOW,"red":Color.RED,"white":Color.WHITE,"brown":Color.BROWN}
     color_dictionary = dict()
-    for i in range(3):
-        print()
-        color = input("Select color for position " + str(i+1) + ": ").lower()
-        angle = float(input("Select angle for position " + str(i+1) + ": "))
+
+    positions_input_lambda = lambda: int(input("Select number of positions: "))
+    color_input_lambda = lambda: input("Select color for position " + str(i+1) + ": ").lower()
+    angle_input_lambda = lambda: float(input("Select angle for position " + str(i+1) + ": "))
+
+    positions = positions_input_lambda()
+    while positions < MIN_NUMBER_POSITIONS:
+        print("Please enter an integer greater or equal to", MIN_NUMBER_POSITIONS)
+        positions = positions_input_lambda()
+
+    for i in range(positions):
+        print("\nPosition ", str(i+1), ":", sep='')
+
+        color = color_input_lambda()
+        while color not in STRING_TO_COLOR_DICTIONARY.keys():
+            print("Please enter a color in", str(STRING_TO_COLOR_DICTIONARY.keys()))
+            color = color_input_lambda()
+
+        angle = angle_input_lambda()
+        while angle < 0 or angle > BASE_ANGLE:
+            print("Please enter an angle in [", str(0), ", ", str(BASE_ANGLE), "].", sep='')
+            angle = angle_input_lambda()
+
         color_dictionary[STRING_TO_COLOR_DICTIONARY[color]] = angle
     return color_dictionary
 
