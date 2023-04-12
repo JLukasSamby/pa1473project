@@ -1,6 +1,5 @@
 #!/usr/bin/env pybricks-micropython
 # from funcs.py import *
-
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (
     Motor,
@@ -98,13 +97,13 @@ def init_claw_motor():
 
 
 def init_crane_motor():
-    craneMotor.run_time(-HIGH_SPEED, 3500)
-    craneMotor.run(LOW_SPEED)
+    craneMotor.run_time(-VERY_HIGH_SPEED, 3000)
+    craneMotor.run(HIGH_SPEED)
 
     while colorSensor.reflection() < INIT_COLOR_REFLECTION_THRESHOLD:
         wait(2)
     craneMotor.reset_angle(CLAW_HEIGHT_IN_DEGREES_OF_CRANE_ROTATION * CRANE_GEAR_RATIO)
-    craneMotor.run_target(MEDIUM_SPEED, 0)
+    craneMotor.run_target(HIGH_SPEED, 0)
 
 
 def init_rotation_motor():
@@ -122,14 +121,14 @@ def pick_item():
     clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE, wait=False)
     craneMotor.run_until_stalled(HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / CRANE_GEAR_RATIO)
     clawMotor.run_until_stalled(-HIGH_SPEED, then=Stop.HOLD, duty_limit=MAX_DUTY / 2)
-    craneMotor.run_target(LOW_SPEED, initialAngle)
+    craneMotor.run_target(HIGH_SPEED, initialAngle)
 
 
 def drop_item():
     initialAngle = craneMotor.angle()
     craneMotor.run_until_stalled(HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / CRANE_GEAR_RATIO)
     clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE)
-    craneMotor.run_target(LOW_SPEED, initialAngle)
+    craneMotor.run_target(HIGH_SPEED, initialAngle)
 
 
 def get_color():
@@ -142,11 +141,12 @@ def get_color_rgb():
 
 def do_at(angle, func):
     if angle > MAX_ROTATION_ANGLE or angle < MIN_ROTATION_ANGLE:
-        return
-    initialAngle = rotationMotor.angle()
-    rotationMotor.run_target(HIGH_SPEED, -ROTATION_GEAR_RATIO * angle)
-    func()
-    rotationMotor.run_target(HIGH_SPEED, ROTATION_GEAR_RATIO * initialAngle)
+        raise ValueError("Use angle in range [0, 190].")
+    else:
+        initialAngle = rotationMotor.angle()
+        rotationMotor.run_target(VERY_HIGH_SPEED, -ROTATION_GEAR_RATIO * angle)
+        func()
+        rotationMotor.run_target(VERY_HIGH_SPEED, ROTATION_GEAR_RATIO * initialAngle)
 
 
 def drop_item_at(angle):
@@ -157,10 +157,14 @@ def pick_item_at(angle):
     do_at(angle, pick_item)
 
 
-def drop_item_by_color(color_dictionary=COLOR_DICTIONARY):
-    color = get_color()
-    angle = color_dictionary[color]
-    drop_item_at(angle)
+def drop_item_by_color(color, color_dictionary=COLOR_DICTIONARY):
+    try:
+        angle = color_dictionary[color]
+    except (KeyError, ValueError) as error:
+        print(error)
+        print("No such color in color_dictionary.")
+    else:
+        drop_item_at(angle)
 
 
 def user_generate_color_dictionary():
@@ -168,6 +172,7 @@ def user_generate_color_dictionary():
 """
 Select one of the colors:
 Black, Blue, Green, Yellow, Red, White, Brown.
+Select an angle in [0, 180].
 For each position...\
 """
     )
@@ -181,13 +186,13 @@ For each position...\
     return color_dictionary
 
 
-def main():
+def hold():
+    wait(5000)
+
+
+if __name__ == "__main__":
     init()
     pick_item()
     drop_item_at(90)
     pick_item_at(90)
-    while True:
-        craneMotor.hold()
-
-
-main()
+    hold()
