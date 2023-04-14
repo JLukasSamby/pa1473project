@@ -7,8 +7,7 @@ from pybricks.ev3devices import (
     ColorSensor,
     InfraredSensor,
     UltrasonicSensor,
-    GyroSensor,
-)
+    GyroSensor,)
 from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
@@ -20,7 +19,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 # ----------------------------------------
 # Constants
 # ----------------------------------------
-INIT_COLOR_REFLECTION_THRESHOLD = 10
+INIT_COLOR_REFLECTION_THRESHOLD = 12
 
 # Speed constant
 LOW_SPEED = 30
@@ -95,7 +94,6 @@ rotationMotor.control.limits(speed=VERY_HIGH_SPEED, acceleration=120)
 
 def init_claw_motor():
     clawMotor.run_until_stalled(-HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / 4)
-
     clawMotor.reset_angle(CLAW_CLOSED_ANGLE)
     clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE)
 
@@ -111,6 +109,10 @@ def init_crane_motor():
 
 
 def init_rotation_motor():
+    rotationMotor.run(MEDIUM_SPEED)
+    while not touchSensor.pressed():
+        wait(2)
+    rotationMotor.stop()
     rotationMotor.reset_angle(0)
 
 
@@ -215,7 +217,3 @@ def hold():
 
 if __name__ == "__main__":
     init()
-    pick_item()
-    drop_item_at(90)
-    pick_item_at(90)
-    hold()
