@@ -7,7 +7,8 @@ from pybricks.ev3devices import (
     ColorSensor,
     InfraredSensor,
     UltrasonicSensor,
-    GyroSensor,)
+    GyroSensor,
+)
 from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
@@ -57,13 +58,13 @@ MIN_ROTATION_ANGLE = -32
 BASE_ANGLE = 190
 COLOR_DICTIONARY = {
     Color.BLACK: 0,
-    Color.BLUE:     BASE_ANGLE * 1 / 6,
-    Color.GREEN:    BASE_ANGLE * 2 / 6,
-    Color.YELLOW:   BASE_ANGLE * 3 / 6,
-    Color.RED:      BASE_ANGLE * 4 / 6,
-    Color.WHITE:    BASE_ANGLE * 5 / 6,
-    Color.BROWN:    BASE_ANGLE * 6 / 6,
-    None:          -BASE_ANGLE * 1 / 6,
+    Color.BLUE: BASE_ANGLE * 1 / 6,
+    Color.GREEN: BASE_ANGLE * 2 / 6,
+    Color.YELLOW: BASE_ANGLE * 3 / 6,
+    Color.RED: BASE_ANGLE * 4 / 6,
+    Color.WHITE: BASE_ANGLE * 5 / 6,
+    Color.BROWN: BASE_ANGLE * 6 / 6,
+    None: -BASE_ANGLE * 1 / 6,
 }
 
 # Duty
@@ -71,7 +72,15 @@ MAX_DUTY = 100
 
 # Color dictionary function
 MIN_NUMBER_POSITIONS = 3
-STRING_TO_COLOR_DICTIONARY = {"black":Color.BLACK,"blue":Color.BLUE,"green":Color.GREEN,"yellow":Color.YELLOW,"red":Color.RED,"white":Color.WHITE,"brown":Color.BROWN}
+STRING_TO_COLOR_DICTIONARY = {
+    "black": Color.BLACK,
+    "blue": Color.BLUE,
+    "green": Color.GREEN,
+    "yellow": Color.YELLOW,
+    "red": Color.RED,
+    "white": Color.WHITE,
+    "brown": Color.BROWN,
+}
 
 # ----------------------------------------
 # Objects
@@ -112,8 +121,9 @@ def init_rotation_motor():
     rotationMotor.run(MEDIUM_SPEED)
     while not touchSensor.pressed():
         wait(2)
-    rotationMotor.stop()
     rotationMotor.reset_angle(0)
+    rotationMotor.stop()
+    rotationMotor.run_target(HIGH_SPEED, 0)
 
 
 def init():
@@ -125,14 +135,18 @@ def init():
 def pick_item():
     initialAngle = craneMotor.angle()
     clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE, wait=False)
-    craneMotor.run_until_stalled(HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / CRANE_GEAR_RATIO)
-    clawMotor.run_until_stalled(-HIGH_SPEED, then=Stop.HOLD, duty_limit=MAX_DUTY * .8)
+    craneMotor.run_until_stalled(
+        HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / CRANE_GEAR_RATIO
+    )
+    clawMotor.run_until_stalled(-HIGH_SPEED, then=Stop.HOLD, duty_limit=MAX_DUTY * 0.8)
     craneMotor.run_target(HIGH_SPEED, initialAngle)
 
 
 def drop_item():
     initialAngle = craneMotor.angle()
-    craneMotor.run_until_stalled(HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / CRANE_GEAR_RATIO)
+    craneMotor.run_until_stalled(
+        HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / CRANE_GEAR_RATIO
+    )
     clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE)
     craneMotor.run_target(HIGH_SPEED, initialAngle)
 
@@ -176,7 +190,7 @@ def drop_item_by_color(color, color_dictionary=COLOR_DICTIONARY):
 
 def user_generate_color_dictionary():
     print(
-"""
+        """
 Select one of the colors:
 Black, Blue, Green, Yellow, Red, White, Brown.
 Select an angle in [0, 180].
@@ -189,7 +203,9 @@ For each position...\
     color_dictionary = dict()
 
     positions_input_lambda = lambda: int(input("Select number of positions: "))
-    color_input_lambda = lambda: input("Select color for position " + str(i+1) + ": ").lower()
+    color_input_lambda = lambda: input(
+        "Select color for position " + str(i + 1) + ": "
+    ).lower()
 
     positions = positions_input_lambda()
     while positions < MIN_NUMBER_POSITIONS:
@@ -197,7 +213,7 @@ For each position...\
         positions = positions_input_lambda()
 
     for i in range(positions):
-        print("\nPosition ", str(i+1), ":", sep='')
+        print("\nPosition ", str(i + 1), ":", sep="")
 
         color = color_input_lambda()
         while color not in STRING_TO_COLOR_DICTIONARY.keys():
@@ -218,7 +234,9 @@ def hold():
 def check_item():
     """Return True if item present at current location, otherwise False."""
     initialAngle = craneMotor.angle()
-    craneMotor.run_until_stalled(HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / CRANE_GEAR_RATIO)
+    craneMotor.run_until_stalled(
+        HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / CRANE_GEAR_RATIO
+    )
     clawMotor.run_until_stalled(-HIGH_SPEED, then=Stop.HOLD, duty_limit=MAX_DUTY / 2)
     claw_angle = clawMotor.angle()
     clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE)
@@ -248,15 +266,16 @@ def configure_sorting_locations():
     initial_angle = rotationMotor.angle()
     rotationMotor.stop()
     input("Press enter to select current position as pick-up zone.")
-    number_of_drop_off_zones = int(input("Enter number of drop-off zones to configure: "))
+    number_of_drop_off_zones = int(
+        input("Enter number of drop-off zones to configure: ")
+    )
     pick_up_zone = -rotationMotor.angle() / ROTATION_GEAR_RATIO
     drop_off_zones = []
-    for i in range(1, number_of_drop_off_zones+1):
+    for i in range(1, number_of_drop_off_zones + 1):
         input("Press enter to select current position as drop-off zone " + str(i) + ".")
         drop_off_zones.append(-rotationMotor.angle() / ROTATION_GEAR_RATIO)
     rotationMotor.run_target(HIGH_SPEED, initial_angle)
     return pick_up_zone, drop_off_zones
-
 
 
 def sort(color_dictionary):
