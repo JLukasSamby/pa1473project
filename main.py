@@ -126,7 +126,7 @@ def pick_item():
     initialAngle = craneMotor.angle()
     clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE, wait=False)
     craneMotor.run_until_stalled(HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / CRANE_GEAR_RATIO)
-    clawMotor.run_until_stalled(-HIGH_SPEED, then=Stop.HOLD, duty_limit=MAX_DUTY / 2)
+    clawMotor.run_until_stalled(-HIGH_SPEED, then=Stop.HOLD, duty_limit=MAX_DUTY * .8)
     craneMotor.run_target(HIGH_SPEED, initialAngle)
 
 
@@ -151,8 +151,9 @@ def do_at(angle, func):
     else:
         initialAngle = rotationMotor.angle()
         rotationMotor.run_target(VERY_HIGH_SPEED, -ROTATION_GEAR_RATIO * angle)
-        func()
+        return_value = func()
         rotationMotor.run_target(VERY_HIGH_SPEED, ROTATION_GEAR_RATIO * initialAngle)
+        return return_value
 
 
 def drop_item_at(angle):
@@ -183,11 +184,12 @@ Select number of positions (minimum 3).
 For each position...\
 """
     )
+    rotationMotor.stop()
+
     color_dictionary = dict()
 
     positions_input_lambda = lambda: int(input("Select number of positions: "))
     color_input_lambda = lambda: input("Select color for position " + str(i+1) + ": ").lower()
-    angle_input_lambda = lambda: float(input("Select angle for position " + str(i+1) + ": "))
 
     positions = positions_input_lambda()
     while positions < MIN_NUMBER_POSITIONS:
@@ -202,10 +204,8 @@ For each position...\
             print("Please enter a color in", str(STRING_TO_COLOR_DICTIONARY.keys()))
             color = color_input_lambda()
 
-        angle = angle_input_lambda()
-        while angle < 0 or angle > BASE_ANGLE:
-            print("Please enter an angle in [", str(0), ", ", str(BASE_ANGLE), "].", sep='')
-            angle = angle_input_lambda()
+        input("Press enter to select current position as drop-off zone.")
+        angle = -rotationMotor.angle() / ROTATION_GEAR_RATIO
 
         color_dictionary[STRING_TO_COLOR_DICTIONARY[color]] = angle
     return color_dictionary
@@ -215,5 +215,61 @@ def hold():
     wait(5000)
 
 
+def check_item():
+    """Return True if item present at current location, otherwise False."""
+    initialAngle = craneMotor.angle()
+    craneMotor.run_until_stalled(HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / CRANE_GEAR_RATIO)
+    clawMotor.run_until_stalled(-HIGH_SPEED, then=Stop.HOLD, duty_limit=MAX_DUTY / 2)
+    claw_angle = clawMotor.angle()
+    clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE)
+    craneMotor.run_target(HIGH_SPEED, initialAngle)
+    return claw_angle > 2
+
+
+def check_item_at(angle):
+    return do_at(angle, check_item)
+
+
+def get_color_at(angle):
+    pick_item_at(angle)
+    color = get_color()
+    drop_item_at(angle)
+    return color
+
+
+def check_periodically_at(period, angle):
+    """Check if item at designated angle at every period (ms)."""
+    while not check_item_at(angle):
+        wait(period)
+
+
+def configure_sorting_locations():
+    """US12"""
+    initial_angle = rotationMotor.angle()
+    rotationMotor.stop()
+    input("Press enter to select current position as pick-up zone.")
+    number_of_drop_off_zones = int(input("Enter number of drop-off zones to configure: "))
+    pick_up_zone = -rotationMotor.angle() / ROTATION_GEAR_RATIO
+    drop_off_zones = []
+    for i in range(1, number_of_drop_off_zones+1):
+        input("Press enter to select current position as drop-off zone " + str(i) + ".")
+        drop_off_zones.append(-rotationMotor.angle() / ROTATION_GEAR_RATIO)
+    rotationMotor.run_target(HIGH_SPEED, initial_angle)
+    return pick_up_zone, drop_off_zones
+
+
+
+def sort(color_dictionary):
+    pick_item_at(0)
+    color = get_color()
+    if color not in color_dictionary:
+        return False
+    drop_item_at(color_dictionary[color])
+    return True
+
+
 if __name__ == "__main__":
     init()
+    craneMotor.stop()
+    input()
+    print(craneMotor.angle())
