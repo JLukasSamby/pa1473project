@@ -43,7 +43,7 @@ if __name__ == "__main__":
     color_dict = generate_server_color_dictionary(positions)
 
     while True:
-        is_sorted = sort(color_dict)
+        is_sorted = sort(color_dict, 0)
         if not is_sorted:
             rotationMotor.run_target(200, -90 * ROTATION_GEAR_RATIO)
             mbox.send(READY_MESSAGE)
