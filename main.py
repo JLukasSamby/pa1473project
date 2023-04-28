@@ -371,7 +371,8 @@ def configure_zones(number_of_zones):
     ev3.screen.print("Configuring zones...")
     for i in range(number_of_zones):
         ev3.screen.print("\tzone: " + str(i))
-        lst.append(configure_height_and_angle_positions())
+        angle_rotation, angle_crane = configure_height_and_angle_positions()
+        lst.append(angle_rotation)
     ev3.screen.print("DONE configuring zones")
     return lst
 
