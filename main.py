@@ -14,6 +14,7 @@ from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 
+
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 # Click "Open user guide" on the EV3 extension tab for more information.
 
@@ -48,11 +49,11 @@ ROTATION_GEAR_RATIO = ROTATION_BIG_GEAR_TOOTHCOUNT / ROTATION_SMALL_GEAR_TOOTHCO
 COLOR_TO_FLOOR_ANGLE = 30 * CRANE_GEAR_RATIO
 CLAW_HEIGHT_IN_DEGREES_OF_CRANE_ROTATION = 13
 
-CLAW_OPEN_ANGLE = 55
+CLAW_OPEN_ANGLE = 90
 CLAW_CLOSED_ANGLE = 0
 
 MAX_ROTATION_ANGLE = 190
-MIN_ROTATION_ANGLE = -32
+MIN_ROTATION_ANGLE = 0
 
 # Color constants
 BASE_ANGLE = 190
@@ -69,6 +70,9 @@ COLOR_DICTIONARY = {
 
 # Duty
 MAX_DUTY = 100
+
+# Configuration time constants
+CHECK_INTERVAL_IN_MILLISECONDS = 10
 
 # Color dictionary function
 MIN_NUMBER_POSITIONS = 3
@@ -101,14 +105,21 @@ rotationMotor.control.limits(speed=VERY_HIGH_SPEED, acceleration=120)
 # ----------------------------------------
 
 
-def init_claw_motor():
-    clawMotor.run_until_stalled(-HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / 4)
+def init_claw_motor(verbose=False):
+    if verbose:
+        print("Stage 1. Calibrating the claw")
+        ev3.speaker.beep(frequency=500, duration=100)
+    clawMotor.run_until_stalled(-LOW_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY)
     clawMotor.reset_angle(CLAW_CLOSED_ANGLE)
     clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE)
 
 
-def init_crane_motor():
-    craneMotor.run_time(-VERY_HIGH_SPEED, 3000)
+def init_crane_motor(verbose=False):
+    if verbose:
+        print("Stage 2. Calibrating the crane")
+        for _ in range(2):
+            ev3.speaker.beep(frequency=500, duration=200)
+    craneMotor.run_time(-VERY_HIGH_SPEED, 4000)
     craneMotor.run(HIGH_SPEED)
 
     while colorSensor.reflection() < INIT_COLOR_REFLECTION_THRESHOLD:
@@ -117,7 +128,12 @@ def init_crane_motor():
     craneMotor.run_target(HIGH_SPEED, 0)
 
 
-def init_rotation_motor():
+def init_rotation_motor(verbose=False):
+    if verbose:
+        print("Stage 3. Calibrating the rotation motor")
+        for _ in range(3):
+            ev3.speaker.beep(frequency=500, duration=100)
+        
     rotationMotor.run(MEDIUM_SPEED)
     while not touchSensor.pressed():
         wait(2)
@@ -126,10 +142,10 @@ def init_rotation_motor():
     rotationMotor.run_target(HIGH_SPEED, 0)
 
 
-def init():
-    init_claw_motor()
-    init_crane_motor()
-    init_rotation_motor()
+def init(verbose=False):
+    init_rotation_motor(verbose=verbose)
+    init_claw_motor(verbose=verbose)
+    init_crane_motor(verbose=verbose)
 
 
 def pick_item():
@@ -159,15 +175,18 @@ def get_color_rgb():
     return colorSensor.rgb()
 
 
-def do_at(angle, func):
+def do_at(angle, func, *args):
     if angle > MAX_ROTATION_ANGLE or angle < MIN_ROTATION_ANGLE:
         raise ValueError("Use angle in range [0, 190].")
+
+    initialAngle = rotationMotor.angle()
+    rotationMotor.run_target(VERY_HIGH_SPEED, -ROTATION_GEAR_RATIO * angle)
+    if len(args) > 0:
+        return_value = func(*args)
     else:
-        initialAngle = rotationMotor.angle()
-        rotationMotor.run_target(VERY_HIGH_SPEED, -ROTATION_GEAR_RATIO * angle)
         return_value = func()
-        rotationMotor.run_target(VERY_HIGH_SPEED, ROTATION_GEAR_RATIO * initialAngle)
-        return return_value
+    rotationMotor.run_target(VERY_HIGH_SPEED, ROTATION_GEAR_RATIO * initialAngle)
+    return return_value
 
 
 def drop_item_at(angle):
@@ -176,6 +195,28 @@ def drop_item_at(angle):
 
 def pick_item_at(angle):
     do_at(angle, pick_item)
+
+
+def pick_item_height(height):
+    initial_angle = craneMotor.angle()
+    craneMotor.run_target(HIGH_SPEED, height)
+    clawMotor.run_until_stalled(-HIGH_SPEED, then=Stop.HOLD, duty_limit=MAX_DUTY * 0.8)
+    craneMotor.run_target(HIGH_SPEED, initial_angle)
+
+
+def drop_item_height(height):
+    initial_angle = craneMotor.angle()
+    craneMotor.run_target(HIGH_SPEED, height)
+    clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE)
+    craneMotor.run_target(HIGH_SPEED, initial_angle)
+
+
+def pick_item_at_height(angle, height):
+    do_at(angle, pick_item_height, height)
+
+
+def drop_item_at_height(angle, height):
+    do_at(angle, drop_item_height, height)
 
 
 def drop_item_by_color(color, color_dictionary=COLOR_DICTIONARY):
@@ -189,8 +230,7 @@ def drop_item_by_color(color, color_dictionary=COLOR_DICTIONARY):
 
 
 def user_generate_color_dictionary():
-    print(
-        """
+    print("""
 Select one of the colors:
 Black, Blue, Green, Yellow, Red, White, Brown.
 Select an angle in [0, 180].
@@ -287,8 +327,55 @@ def sort(color_dictionary):
     return True
 
 
+def configure_height_and_angle_positions():
+    initial_rotation = rotationMotor.angle()
+    initial_crane_height = craneMotor.angle()
+    clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE)
+    angle_rotation = angle_crane = None
+    while True:
+        pressed = ev3.buttons.pressed()
+
+        if Button.CENTER in pressed:
+            craneMotor.hold()
+            rotationMotor.hold()
+            angle_rotation = -rotationMotor.angle() / ROTATION_GEAR_RATIO
+            angle_crane = craneMotor.angle()
+            break
+
+        if Button.UP in pressed:
+            craneMotor.run(-MEDIUM_SPEED)
+        elif Button.DOWN in pressed:
+            craneMotor.run(MEDIUM_SPEED)
+        else:
+            craneMotor.hold()
+
+        if Button.RIGHT in pressed and rotationMotor.angle() / ROTATION_GEAR_RATIO < MIN_ROTATION_ANGLE:
+            rotationMotor.run(HIGH_SPEED)
+        elif Button.LEFT in pressed and rotationMotor.angle() / ROTATION_GEAR_RATIO > -MAX_ROTATION_ANGLE:
+            rotationMotor.run(-HIGH_SPEED)
+        else:
+            rotationMotor.hold()
+        wait(CHECK_INTERVAL_IN_MILLISECONDS)
+
+    craneMotor.run_target(HIGH_SPEED, initial_crane_height)
+    rotationMotor.run_target(HIGH_SPEED, initial_rotation)
+    return angle_rotation, angle_crane
+
+
+def reset_position():
+    craneMotor.run_target(HIGH_SPEED, 0)
+    rotationMotor.run_target(HIGH_SPEED, 0)
+
+
+def configure_zones(number_of_zones):
+    lst = []
+    for _ in range(number_of_zones):
+        lst.append(configure_height_and_angle_positions())
+    return lst
+
+
 if __name__ == "__main__":
     init()
-    craneMotor.stop()
-    input()
-    print(craneMotor.angle())
+    rotation_angle, crane_angle = configure_height_and_angle_positions()
+    reset_position()
+    pick_item_at_height(rotation_angle, crane_angle)
