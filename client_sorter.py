@@ -53,7 +53,7 @@ if __name__ == "__main__":
             break
         if message == READY_MESSAGE:
             rotationMotor.run_target(200, -pick_up_zone * ROTATION_GEAR_RATIO)
-            is_sorted = sort(color_dict)
+            is_sorted = sort(color_dict, pick_up_zone)
             rotationMotor.run_target(200, 0)
             if is_sorted:
                 mbox.send(READY_MESSAGE)
