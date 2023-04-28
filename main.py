@@ -1,5 +1,4 @@
 #!/usr/bin/env pybricks-micropython
-# from funcs.py import *
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (
     Motor,
@@ -52,7 +51,7 @@ CLAW_HEIGHT_IN_DEGREES_OF_CRANE_ROTATION = 13
 CLAW_OPEN_ANGLE = 90
 CLAW_CLOSED_ANGLE = 0
 
-MAX_ROTATION_ANGLE = 190
+MAX_ROTATION_ANGLE = 210
 MIN_ROTATION_ANGLE = 0
 
 # Color constants
@@ -369,8 +368,11 @@ def reset_position():
 
 def configure_zones(number_of_zones):
     lst = []
-    for _ in range(number_of_zones):
+    ev3.screen.print("Configuring zones...")
+    for i in range(number_of_zones):
+        ev3.screen.print("\tzone: " + str(i))
         lst.append(configure_height_and_angle_positions())
+    ev3.screen.print("DONE configuring zones")
     return lst
 
 

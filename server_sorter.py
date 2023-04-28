@@ -4,7 +4,8 @@ from main import (
     rotationMotor,
     ROTATION_GEAR_RATIO,
     sort,
-    configure_zones
+    configure_zones,
+    ev3
 )
 from pybricks.messaging import BluetoothMailboxServer, TextMailbox
 from pybricks.tools import wait
@@ -28,12 +29,17 @@ if __name__ == "__main__":
     mbox = TextMailbox(MBOX_NAME, server)
 
     print("Waiting for connection...")
+    ev3.screen.print("Waiting for connection...")
     server.wait_for_connection()
     print("Connected!")
+    ev3.screen.print("Connected!")
 
     init()
+    ev3.screen.print("init started")
 
+    ev3.screen.print("Configure drop zones")
     positions = configure_zones(SERVER_NUM_ZONES)
+    ev3.screen.print("Configured drop zones")
     color_dict = generate_server_color_dictionary(positions)
 
     while True:
@@ -46,6 +52,8 @@ if __name__ == "__main__":
                 rotationMotor.run_target(200, 0)
             elif message == ERROR_MESSAGE:
                 print("Could not sort item.")
+                ev3.screen.print("Could not sort item")
                 break
         print("Waiting for next brick...")
+        ev3.screen.print("Waiting for next brick")
         wait(5000)

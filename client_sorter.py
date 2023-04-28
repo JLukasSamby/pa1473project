@@ -8,7 +8,8 @@ from main import (
     user_generate_color_dictionary,
     sort,
     ROTATION_GEAR_RATIO,
-    configure_zones
+    configure_zones,
+    ev3
 )
 
 
@@ -27,19 +28,25 @@ if __name__ == "__main__":
     mbox = TextMailbox(MBOX_NAME, client)
 
     print("Establishing connection...")
+    ev3.screen.print ("Establishing connection...")
     client.connect(SERVER_NAME)
     print("Connected!")
+    ev3.screen.print("Connected")
 
     init()
 
-    rotationMotor.stop()
-    input("Press enter to select current position as pick-up zone.")
-    pick_up_zone = -rotationMotor.angle() / ROTATION_GEAR_RATIO
+    ev3.screen.print("Configure pick up")
+    pick_up_zone = configure_zones(1)
+    pick_up_zone = pick_up_zone[0]
+    ev3.screen.print("Configured pick up")
 
+    ev3.screen.print("Configure drop zones")
     positions = configure_zones(CLIENT_NUM_ZONES)
+    ev3.screen.print("Configured drop zones")
     color_dict = generate_client_color_dictionary(positions)
 
     while True:
+        ev3.screen.print("Waiting for instruction")
         mbox.wait()
         message = mbox.read()
         if message == EXIT_MESSAGE:
