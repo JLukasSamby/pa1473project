@@ -47,6 +47,7 @@ if __name__ == "__main__":
         if not is_sorted:
             rotationMotor.run_target(200, -90 * ROTATION_GEAR_RATIO)
             mbox.send(READY_MESSAGE)
+            mbox.wait()
             message = mbox.read()
             if message == READY_MESSAGE:
                 rotationMotor.run_target(200, 0)

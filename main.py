@@ -321,6 +321,7 @@ def sort(color_dictionary):
     pick_item_at(0)
     color = get_color()
     if color not in color_dictionary:
+        drop_item()
         return False
     drop_item_at(color_dictionary[color])
     return True
