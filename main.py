@@ -296,7 +296,16 @@ def get_color_at(angle):
 
 def check_periodically_at(period, angle):
     """Check if item at designated angle at every period (ms)."""
-    while not check_item_at(angle):
+    while True:
+        if check_item_at(angle):
+            ev3.speaker.beep(frequency=500, duration=100)
+        wait(period)
+
+
+def sort_periodically_at(period, angle, color_dictionary=COLOR_DICTIONARY):
+    """Check if item at designated angle at every period (ms)."""
+    while True:
+        sort(color_dictionary, angle)
         wait(period)
 
 
@@ -317,7 +326,7 @@ def configure_sorting_locations():
     return pick_up_zone, drop_off_zones
 
 
-def sort(color_dictionary, angle):
+def sort(color_dictionary=COLOR_DICTIONARY, angle=0):
     pick_item_at(angle)
     color = get_color()
     if color not in color_dictionary:
@@ -357,8 +366,8 @@ def configure_height_and_angle_positions():
             rotationMotor.hold()
         wait(CHECK_INTERVAL_IN_MILLISECONDS)
 
-    craneMotor.run_target(HIGH_SPEED, initial_crane_height)
     rotationMotor.run_target(HIGH_SPEED, initial_rotation)
+    craneMotor.run_target(HIGH_SPEED, initial_crane_height)
     return angle_rotation, angle_crane
 
 
