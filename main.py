@@ -263,7 +263,7 @@ def drop_item_by_color(color, color_dictionary=COLOR_DICTIONARY):
         print(error)
         print("No such color in color_dictionary.")
     else:
-        drop_item_at(angle)
+        drop(angle=angle)
 
 
 def user_generate_color_dictionary():
@@ -347,7 +347,7 @@ def sort_periodically_at(period, angle, color_dictionary=COLOR_DICTIONARY):
         wait(period)
 
 
-def sort(color_dictionary=COLOR_DICTIONARY, angle=0, include_heights=False, sort_sign=1):
+def sort(color_dictionary, angle=0, include_heights=False, sort_sign=1):
     pick(angle=angle)
     color = get_color()
     if color not in color_dictionary:
@@ -402,6 +402,8 @@ def reset_position():
 
 
 def configure_zones(number_of_zones, include_heights=False):
+    """Use buttons to configre number_of_zones zones.
+    Return format is list containing tuples of (rotationAngle, heightAngle)"""
     lst = []
     notify("Configuring zones")
 
