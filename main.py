@@ -308,30 +308,6 @@ def hold():
     wait(5000)
 
 
-def check_item():
-    """Return True if item present at current location, otherwise False."""
-    initialAngle = craneMotor.angle()
-    craneMotor.run_until_stalled(
-        HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / CRANE_GEAR_RATIO
-    )
-    clawMotor.run_until_stalled(-HIGH_SPEED, then=Stop.HOLD, duty_limit=MAX_DUTY / 2)
-    claw_angle = clawMotor.angle()
-    clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE)
-    craneMotor.run_target(HIGH_SPEED, initialAngle)
-    return claw_angle > 2
-
-
-def check_item_at(angle):
-    return do_at(angle, check_item)
-
-
-def get_color_at(angle):
-    pick(angle=angle)
-    color = get_color()
-    drop(angle=angle)
-    return color
-
-
 def check_periodically_at(period, angle):
     """Check if item at designated angle at every period (ms)."""
     while True:
@@ -394,11 +370,6 @@ def configure_height_and_angle_positions():
     rotationMotor.run_target(VERY_HIGH_SPEED, initial_rotation)
     craneMotor.run_target(HIGH_SPEED, initial_crane_height)
     return angle_rotation, angle_crane
-
-
-def reset_position():
-    craneMotor.run_target(VERY_HIGH_SPEED, 0)
-    rotationMotor.run_target(VERY_HIGH_SPEED, 0)
 
 
 def configure_zones(number_of_zones, include_heights=False):
