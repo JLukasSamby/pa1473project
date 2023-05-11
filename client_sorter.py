@@ -16,17 +16,11 @@ from main import (
 CLIENT_NUM_ZONES = 2
 
 
-def generate_client_color_dictionary(positions, heights=None):
-    if heights is None:
-        return {
-            Color.BLACK: positions[0],
-            Color.BLUE: positions[1],
-        }
-    else:
-        return {
-            Color.BLACK: (positions[0], heights[0]),
-            Color.BLUE: (positions[1], heights[1])
-        }
+def generate_client_color_dictionary(positions):
+    return {
+        Color.BLACK: positions[0],
+        Color.BLUE: positions[1],
+    }
 
 
 if __name__ == "__main__":
@@ -47,9 +41,9 @@ if __name__ == "__main__":
     ev3.screen.print("Configured pick up")
 
     ev3.screen.print("Configure drop zones")
-    (angles, heights) = configure_zones(CLIENT_NUM_ZONES, include_heights=True)
+    positions = configure_zones(CLIENT_NUM_ZONES, include_heights=True)
     ev3.screen.print("Configured drop zones")
-    color_dict = generate_client_color_dictionary(angles, heights)
+    color_dict = generate_client_color_dictionary(positions)
 
     while True:
         ev3.screen.print("Waiting for instruction")

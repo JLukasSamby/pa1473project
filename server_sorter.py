@@ -16,19 +16,12 @@ from main import init
 SERVER_NUM_ZONES = 3
 
 
-def generate_server_color_dictionary(angles, heights=None):
-    if heights is None:
-        return {
-            Color.GREEN: angles[0],
-            Color.YELLOW: angles[1],
-            Color.RED: angles[2]
-        }
-    else:
-        return {
-            Color.GREEN: (angles[0], heights[0]),
-            Color.YELLOW: (angles[1], heights[1]),
-            Color.RED: (angles[2], heights[2])
-        }
+def generate_server_color_dictionary(positions):
+    return {
+        Color.GREEN: positions[0],
+        Color.YELLOW: positions[1],
+        Color.RED: positions[2]
+    }
 
 
 if __name__ == "__main__":
@@ -45,9 +38,9 @@ if __name__ == "__main__":
     ev3.screen.print("init started")
 
     ev3.screen.print("Configure drop zones")
-    (angles, heights) = configure_zones(SERVER_NUM_ZONES, include_heights=True)
+    positions = configure_zones(SERVER_NUM_ZONES, include_heights=True)
     ev3.screen.print("Configured drop zones")
-    color_dict = generate_server_color_dictionary(angles, heights)
+    color_dict = generate_server_color_dictionary(positions)
 
     while True:
         is_sorted = sort(color_dict, 0, include_heights=True)
