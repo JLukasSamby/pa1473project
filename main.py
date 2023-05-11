@@ -3,15 +3,10 @@ from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (
     Motor,
     TouchSensor,
-    ColorSensor,
-    InfraredSensor,
-    UltrasonicSensor,
-    GyroSensor,
+    ColorSensor
 )
-from pybricks.parameters import Port, Stop, Direction, Button, Color
-from pybricks.tools import wait, StopWatch, DataLog
-from pybricks.robotics import DriveBase
-from pybricks.media.ev3dev import SoundFile, ImageFile
+from pybricks.parameters import Port, Stop, Button, Color
+from pybricks.tools import wait
 
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
@@ -107,6 +102,7 @@ rotationMotor.control.limits(speed=VERY_HIGH_SPEED, acceleration=120)
 
 
 def init_claw_motor(verbose=False):
+    """Initialize claw motor such that CLAW_CLOSED_ANGLE"""
     if verbose:
         print("Stage 1. Calibrating the claw")
         ev3.speaker.beep(frequency=500, duration=100)
@@ -116,6 +112,7 @@ def init_claw_motor(verbose=False):
 
 
 def init_crane_motor(verbose=False):
+    """Initialize"""
     if verbose:
         print("Stage 2. Calibrating the crane")
         for _ in range(2):
@@ -311,7 +308,7 @@ def hold():
 def check_periodically_at(period, angle):
     """Check if item at designated angle at every period (ms)."""
     while True:
-        if check_item_at(angle):
+        if item_in_place(angle):
             ev3.speaker.beep(frequency=500, duration=100)
         wait(period)
 
