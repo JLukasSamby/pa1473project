@@ -7,7 +7,8 @@ from main import (
     rotationMotor,
     sort,
     configure_zones,
-    notify
+    notify,
+    ev3
 )
 
 
@@ -22,6 +23,7 @@ def generate_client_color_dictionary(positions):
 
 
 if __name__ == "__main__":
+    ev3
     client = BluetoothMailboxClient()
     mbox = TextMailbox(MBOX_NAME, client)
 
@@ -34,7 +36,7 @@ if __name__ == "__main__":
     notify("Configure pick up")
     pick_up_zone = configure_zones(1)
     pick_up_zone = pick_up_zone[0]
-    notify("Configured pick up")
+    notify("Pick up configured")
 
     notify("Configure drop zones")
     positions = configure_zones(CLIENT_NUM_ZONES, include_heights=True)
