@@ -395,8 +395,13 @@ def item_in_place(angle=None, height=None):
     """Return true if item in place given by angle and height"""
     pick(angle=angle, height=height)
     claw_angle = clawMotor.angle()
-    drop(angle=angle, height=height)
-    return claw_angle < CLAW_CLOSED_ANGLE + 10
+    notify(str(claw_angle))
+    condition = claw_angle < CLAW_CLOSED_ANGLE + 10
+    if condition:
+        drop(angle=angle, height=height)
+    else:
+        clawMotor.run_target(VERY_HIGH_SPEED, CLAW_OPEN_ANGLE)
+    return condition
 
 
 def notify(message: str) -> None:
@@ -407,24 +412,24 @@ def notify(message: str) -> None:
 
 
 if __name__ == "__main__":
-    ev3.speaker.set_speech_options(language=None, voice='f3', speed=300, pitch=None)
-#     ev3.speaker.say("""Look, I was gonna go easy on you not to hurt your feelings. But Im only going to get this one chance. Somethings wrong, I can feel it" (Six minutes, Slim Shady, youre on.Just a feeling Ive got, like somethings about to happen, but I dont know what. 
-# If that means what I think it means, we're in trouble, big trouble; 
-# And if he is as bananas as you say, I'm not taking any chances"
-# "You are just what the doc ordered"
-# chorus:
-# I'm beginnin' to feel like a Rap God, Rap God
-# All my people from the front to the back nod, back nod
-# Now, who thinks their arms are long enough to slap box, slap box?
-# They said I rap like a robot, so call me Rap-bot
-# verse 1:
-# But for me to rap like a computer it must be in my genes
-# I got a laptop in my back pocket
-# My pen'll go off when I half-cock it
-# Got a fat knot from that rap profit
-# Made a livin' and a killin' off it
-# Ever since Bill Clinton was still in office
-# With Monica Lewinsky feelin' on his nutsack
-# """) # rap god lyrics
+    ev3.speaker.set_speech_options(language=None, voice='f3', speed=250, pitch=None)
+    ev3.speaker.say("""Look, I was gonna go easy on you not to hurt your feelings. But Im only going to get this one chance. Somethings wrong, I can feel it" (Six minutes, Slim Shady, youre on.Just a feeling Ive got, like somethings about to happen, but I dont know what. 
+If that means what I think it means, we're in trouble, big trouble; 
+And if he is as bananas as you say, I'm not taking any chances"
+"You are just what the doc ordered"
+
+I'm beginnin' to feel like a Rap God, Rap God
+All my people from the front to the back nod, back nod
+Now, who thinks their arms are long enough to slap box, slap box?
+They said I rap like a robot, so call me Rap-bot
+verse 1:
+But for me to rap like a computer it must be in my genes
+got a laptop in my back pocket
+My pen'll go off when I half-cock it
+Got a fat knot from that rap profit
+Made a livin' and a killin' off it
+Ever since Bill Clinton was still in office
+With Monica Lewinsky feelin' on his nutsack
+""") # rap god lyrics
     init()
     notify(str(item_in_place()))
