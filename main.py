@@ -177,20 +177,25 @@ def get_color_rgb():
     return colorSensor.rgb()
 
 
-def do_at(angle, func, *args):
+def do_at(angle, func, *args, should_return=True):
     if angle > MAX_ROTATION_ANGLE or angle < MIN_ROTATION_ANGLE:
         raise ValueError("Use angle in range [0, 190].")
 
-    initialRotationAngle = rotationMotor.angle()
-    initialCraneAngle = craneMotor.angle()
+    if should_return:
+        initial_rotation_angle = rotationMotor.angle()
+        initial_crane_angle = craneMotor.angle()
+
     craneMotor.run_target(HIGH_SPEED, -CRANE_GEAR_RATIO * CRANE_RESTING_HIGH_ANGLE)
     rotationMotor.run_target(VERY_HIGH_SPEED, -ROTATION_GEAR_RATIO * angle)
     if len(args) > 0:
         return_value = func(*args)
     else:
         return_value = func()
-    rotationMotor.run_target(VERY_HIGH_SPEED, ROTATION_GEAR_RATIO * initialRotationAngle)
-    craneMotor.run_target(HIGH_SPEED, CRANE_GEAR_RATIO * initialCraneAngle)
+
+    if should_return:
+        craneMotor.run_target(VERY_HIGH_SPEED, -CRANE_GEAR_RATIO * CRANE_RESTING_HIGH_ANGLE)
+        rotationMotor.run_target(VERY_HIGH_SPEED, ROTATION_GEAR_RATIO * initial_rotation_angle)
+        craneMotor.run_target(HIGH_SPEED, CRANE_GEAR_RATIO * initial_crane_angle)
     return return_value
 
 
@@ -222,6 +227,82 @@ def pick_item_at_height(angle, height):
 
 def drop_item_at_height(angle, height):
     do_at(angle, drop_item_height, height)
+
+
+def drop(
+    angle: float = None,
+    height: float = None,
+    should_return: bool = True
+) -> None:
+    """Drop item at given angle and position.
+    should_return should be set if should return to position before drop."""
+    if angle is None and height is None:
+        _drop_stalled()
+    if height is None:
+        do_at(angle, _drop_stalled, should_return=should_return)
+    if angle is None:
+        _drop_height(height)
+    else:
+        do_at(angle, _drop_height, height, should_return=should_return)
+
+
+def _drop() -> None:
+    """Drop item."""
+    clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE)
+
+
+def _drop_stalled() -> None:
+    """Drop item using run_until_stalled."""
+    craneMotor.run_until_stalled(
+        HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / CRANE_GEAR_RATIO
+    )
+    _drop()
+    craneMotor.run_target(HIGH_SPEED, 0)
+
+def _drop_height(height: float) -> None:
+    """Drop item using preconfigured height."""
+    craneMotor.run_target(HIGH_SPEED, height)
+    _drop()
+    craneMotor.run_target(HIGH_SPEED, 0)
+
+
+def pick(angle: float=None, height: float=None, should_return: bool=True):
+    """Pick item at given angle, height.
+    should_return flag should be set if should return to position before pick.
+    """
+    if angle is None and height is None:
+        _pick_stalled()
+    if height is None:
+        do_at(angle, _pick_stalled, should_return=should_return)
+    if angle is None:
+            _pick_height(height)
+    else:
+        do_at(angle, _pick_height, height, should_return=should_return)
+
+
+def _open_claw() -> None:
+    """Open claw."""
+    clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE)
+
+def _close_claw() -> None:
+    """Close claw."""
+    clawMotor.run_until_stalled(-HIGH_SPEED, then=Stop.HOLD, duty_limit=MAX_DUTY * 0.8)
+
+def _pick_stalled() -> None:
+    """Drop item using run_until_stalled."""
+    _open_claw()
+    craneMotor.run_until_stalled(
+        HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / CRANE_GEAR_RATIO
+    )
+    _close_claw()
+    craneMotor.run_target(HIGH_SPEED, 0)
+
+def _pick_height(height: float) -> None:
+    """Drop item using preconfigured height."""
+    _open_claw()
+    craneMotor.run_target(HIGH_SPEED, height)
+    _close_claw()
+    craneMotor.run_target(HIGH_SPEED, 0)
 
 
 def drop_item_by_color(color, color_dictionary=COLOR_DICTIONARY):
