@@ -150,25 +150,6 @@ def init(verbose=False):
     init_crane_motor(verbose=verbose)
 
 
-def pick_item():
-    initialAngle = craneMotor.angle()
-    clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE, wait=False)
-    craneMotor.run_until_stalled(
-        HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / CRANE_GEAR_RATIO
-    )
-    clawMotor.run_until_stalled(-HIGH_SPEED, then=Stop.HOLD, duty_limit=MAX_DUTY * 0.8)
-    craneMotor.run_target(HIGH_SPEED, initialAngle)
-
-
-def drop_item():
-    initialAngle = craneMotor.angle()
-    craneMotor.run_until_stalled(
-        HIGH_SPEED, then=Stop.COAST, duty_limit=MAX_DUTY / CRANE_GEAR_RATIO
-    )
-    clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE)
-    craneMotor.run_target(HIGH_SPEED, initialAngle)
-
-
 def get_color():
     return colorSensor.color()
 
@@ -199,36 +180,6 @@ def do_at(angle, func, *args, should_return=True):
     return return_value
 
 
-def drop_item_at(angle):
-    do_at(angle, drop_item)
-
-
-def pick_item_at(angle):
-    do_at(angle, pick_item)
-
-
-def pick_item_height(height):
-    initial_angle = craneMotor.angle()
-    craneMotor.run_target(HIGH_SPEED, height)
-    clawMotor.run_until_stalled(-HIGH_SPEED, then=Stop.HOLD, duty_limit=MAX_DUTY * 0.8)
-    craneMotor.run_target(HIGH_SPEED, initial_angle)
-
-
-def drop_item_height(height):
-    initial_angle = craneMotor.angle()
-    craneMotor.run_target(HIGH_SPEED, height)
-    clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE)
-    craneMotor.run_target(HIGH_SPEED, initial_angle)
-
-
-def pick_item_at_height(angle, height):
-    do_at(angle, pick_item_height, height)
-
-
-def drop_item_at_height(angle, height):
-    do_at(angle, drop_item_height, height)
-
-
 def drop(
     angle: float = None,
     height: float = None,
@@ -238,9 +189,9 @@ def drop(
     should_return should be set if should return to position before drop."""
     if angle is None and height is None:
         _drop_stalled()
-    if height is None:
+    elif height is None:
         do_at(angle, _drop_stalled, should_return=should_return)
-    if angle is None:
+    elif angle is None:
         _drop_height(height)
     else:
         do_at(angle, _drop_height, height, should_return=should_return)
@@ -272,10 +223,10 @@ def pick(angle: float=None, height: float=None, should_return: bool=True):
     """
     if angle is None and height is None:
         _pick_stalled()
-    if height is None:
+    elif height is None:
         do_at(angle, _pick_stalled, should_return=should_return)
-    if angle is None:
-            _pick_height(height)
+    elif angle is None:
+        _pick_height(height)
     else:
         do_at(angle, _pick_height, height, should_return=should_return)
 
@@ -375,9 +326,9 @@ def check_item_at(angle):
 
 
 def get_color_at(angle):
-    pick_item_at(angle)
+    pick(angle=angle)
     color = get_color()
-    drop_item_at(angle)
+    drop(angle=angle)
     return color
 
 
@@ -396,33 +347,16 @@ def sort_periodically_at(period, angle, color_dictionary=COLOR_DICTIONARY):
         wait(period)
 
 
-def configure_sorting_locations():
-    """US12"""
-    initial_angle = rotationMotor.angle()
-    rotationMotor.stop()
-    input("Press enter to select current position as pick-up zone.")
-    number_of_drop_off_zones = int(
-        input("Enter number of drop-off zones to configure: ")
-    )
-    pick_up_zone = -rotationMotor.angle() / ROTATION_GEAR_RATIO
-    drop_off_zones = []
-    for i in range(1, number_of_drop_off_zones + 1):
-        input("Press enter to select current position as drop-off zone " + str(i) + ".")
-        drop_off_zones.append(-rotationMotor.angle() / ROTATION_GEAR_RATIO)
-    rotationMotor.run_target(HIGH_SPEED, initial_angle)
-    return pick_up_zone, drop_off_zones
-
-
 def sort(color_dictionary=COLOR_DICTIONARY, angle=0, include_heights=False, sort_sign=1):
-    pick_item_at(angle)
+    pick(angle=angle)
     color = get_color()
     if color not in color_dictionary:
-        drop_item_at(angle)
+        drop(angle=angle)
         return False
     if include_heights:
-        drop_item_at_height(sort_sign * color_dictionary[color][0], color_dictionary[color][1])
+        drop(angle=sort_sign * color_dictionary[color][0], height=color_dictionary[color][1])
     else:
-        drop_item_at(sort_sign*color_dictionary[color])
+        drop(angle=sort_sign*color_dictionary[color])
     return True
 
 
@@ -469,7 +403,8 @@ def reset_position():
 
 def configure_zones(number_of_zones, include_heights=False):
     lst = []
-    ev3.screen.print("Configuring zones...")
+    notify("Configuring zones")
+
     for i in range(number_of_zones):
         ev3.screen.print("\tzone: " + str(i))
         angle_rotation, angle_crane = configure_height_and_angle_positions()
@@ -477,12 +412,52 @@ def configure_zones(number_of_zones, include_heights=False):
             lst.append((angle_rotation, angle_crane))
         else:
             lst.append(angle_rotation)
-    ev3.screen.print("DONE configuring zones")
+    notify("DONE configuring zones")
+    
     return lst
 
 
+def item_in_place(angle=None, height=None):
+    """Return true if item in place given by angle and height"""
+    pick(angle=angle, height=height)
+    claw_angle = clawMotor.angle()
+    drop(angle=angle, height=height)
+    return claw_angle < CLAW_OPEN_ANGLE - 5
+
+
+def notify(message: str) -> None:
+    """Notify user through terminal, screen and speaker."""
+    print(message)
+    ev3.screen.print(message)
+    ev3.speaker.say(message)
+
+
 if __name__ == "__main__":
+    ev3.speaker.say("""Look, I was gonna go easy on you not to hurt your feelings. But Im only going to get this one chance. Somethings wrong, I can feel it" (Six minutes, Slim Shady, youre on.Just a feeling Ive got, like somethings about to happen, but I dont know what. 
+If that means what I think it means, we're in trouble, big trouble; 
+And if he is as bananas as you say, I'm not taking any chances"
+"You are just what the doc ordered"
+chorus:
+I'm beginnin' to feel like a Rap God, Rap God
+All my people from the front to the back nod, back nod
+Now, who thinks their arms are long enough to slap box, slap box?
+They said I rap like a robot, so call me Rap-bot
+verse 1:
+But for me to rap like a computer it must be in my genes
+I got a laptop in my back pocket
+My pen'll go off when I half-cock it
+Got a fat knot from that rap profit
+Made a livin' and a killin' off it
+Ever since Bill Clinton was still in office
+With Monica Lewinsky feelin' on his nutsack
+""") # rap god lyrics
     init()
-    rotation_angle, crane_angle = configure_height_and_angle_positions()
-    reset_position()
-    pick_item_at_height(rotation_angle, crane_angle)
+    pick()
+    drop(angle=90, height=0)
+    pick()
+    drop(angle=90)
+    pick()
+    drop()
+    pick()
+    drop(height=0)
+

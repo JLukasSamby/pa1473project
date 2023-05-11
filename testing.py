@@ -1,1 +1,0 @@
-from funcs.py import *

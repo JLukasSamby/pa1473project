@@ -1,6 +1,5 @@
 #!/usr/bin/env pybricks-micropython
 from main import (
-    user_generate_color_dictionary,
     rotationMotor,
     craneMotor,
     ROTATION_GEAR_RATIO,
@@ -8,10 +7,11 @@ from main import (
     CRANE_RESTING_HIGH_ANGLE,
     sort,
     configure_zones,
-    ev3,
+    notify,
+    item_in_place,
+    hold
 )
 from pybricks.messaging import BluetoothMailboxServer, TextMailbox
-from pybricks.tools import wait
 from pybricks.parameters import Color
 from sorter import MBOX_NAME, READY_MESSAGE, ERROR_MESSAGE
 from main import init
@@ -31,25 +31,23 @@ if __name__ == "__main__":
     server = BluetoothMailboxServer()
     mbox = TextMailbox(MBOX_NAME, server)
 
-    print("Waiting for connection...")
-    ev3.screen.print("Waiting for connection...")
-    ev3.speaker.say("Waiting for connection...")
-    
+    notify("Waiting for connection.")
     server.wait_for_connection()
-    print("Connected!")
-    ev3.screen.print("Connected!")
+    notify("Connected.")
 
     init()
-    ev3.screen.print("init started")
 
-    ev3.screen.print("Configure drop zones")
+    notify("Configure drop zones")
     positions = configure_zones(SERVER_NUM_ZONES, include_heights=True)
-    ev3.screen.print("Configured drop zones")
     color_dict = generate_server_color_dictionary(positions)
+    notify("Drop zones configured")
 
     while True:
-        is_sorted = sort(color_dict, 0, include_heights=True)
-        if not is_sorted:
+        while not item_in_place():
+            notify("No item found.")
+            notify("Waiting for item")
+            hold()
+        if not sort(color_dict, 0, include_heights=True):
             craneMotor.run_target(200,-CRANE_GEAR_RATIO*CRANE_RESTING_HIGH_ANGLE)
             rotationMotor.run_target(200, -90 * ROTATION_GEAR_RATIO)
             mbox.send(READY_MESSAGE)
@@ -58,11 +56,7 @@ if __name__ == "__main__":
             if message == READY_MESSAGE:
                 rotationMotor.run_target(200, 0)
             elif message == ERROR_MESSAGE:
-                print("Could not sort item.")
-                ev3.screen.print("Could not sort item")
-                ev3.speaker.say("Could not sort item")
+                notify("Could not sort item")
                 break
-        print("Waiting for next brick...")
-        ev3.screen.print("Waiting for next brick")
-        ev3.speaker.say("Waiting for next brick")
-        wait(5001)
+        notify("Waiting for next brick")
+        hold()

@@ -5,12 +5,9 @@ from sorter import MBOX_NAME, EXIT_MESSAGE, READY_MESSAGE, SERVER_NAME, ERROR_ME
 from main import (
     init,
     rotationMotor,
-    user_generate_color_dictionary,
     sort,
-    ROTATION_GEAR_RATIO,
     configure_zones,
-    ev3,
-    reset_position
+    notify
 )
 
 
@@ -28,39 +25,29 @@ if __name__ == "__main__":
     client = BluetoothMailboxClient()
     mbox = TextMailbox(MBOX_NAME, client)
 
-    print("Establishing connection...")
-    ev3.screen.print("Establishing connection...")
-    ev3.speaker.say("Establishing connection...")
+    notify("Establishing connection")
     client.connect(SERVER_NAME)
-    print("Connected!")
-    ev3.screen.print("Connected")
-    ev3.speaker.say("Connected")
+    notify("Connected")
 
     init()
 
-    ev3.screen.print("Configure pick up")
-    ev3.speaker.say("Configure pick up")
+    notify("Configure pick up")
     pick_up_zone = configure_zones(1)
     pick_up_zone = pick_up_zone[0]
-    ev3.screen.print("Configured pick up")
-    ev3.speaker.say("Configured pick up")
+    notify("Configured pick up")
 
-    ev3.screen.print("Configure drop zones")
-    ev3.speaker.say("Configure drop zones")
+    notify("Configure drop zones")
     positions = configure_zones(CLIENT_NUM_ZONES, include_heights=True)
-    ev3.screen.print("Configured drop zones")
-    ev3.speaker.say("Configured drop zones")
     color_dict = generate_client_color_dictionary(positions)
+    notify("Drop zones configured")
 
     while True:
-        ev3.screen.print("Waiting for instruction")
-        ev3.speaker.say("Waiting for instruction")
+        notify("Waiting for instruction")
         mbox.wait()
         message = mbox.read()
         if message == EXIT_MESSAGE:
             break
         if message == READY_MESSAGE:
-            # rotationMotor.run_target(200, -pick_up_zone * ROTATION_GEAR_RATIO)
             is_sorted = sort(color_dict, pick_up_zone, include_heights=True, sort_sign=-1)
             rotationMotor.run_target(-200, 0)
             if is_sorted:
