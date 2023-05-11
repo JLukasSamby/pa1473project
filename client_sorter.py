@@ -9,7 +9,8 @@ from main import (
     sort,
     ROTATION_GEAR_RATIO,
     configure_zones,
-    ev3
+    ev3,
+    reset_position
 )
 
 
@@ -28,17 +29,21 @@ if __name__ == "__main__":
     mbox = TextMailbox(MBOX_NAME, client)
 
     print("Establishing connection...")
-    ev3.screen.print ("Establishing connection...")
+    ev3.screen.print("Establishing connection...")
+    ev3.speaker.say("Establishing connection...")
     client.connect(SERVER_NAME)
     print("Connected!")
     ev3.screen.print("Connected")
+    ev3.speaker.say("Connected")
 
     init()
 
     ev3.screen.print("Configure pick up")
+    ev3.speaker.say("Configure pick up")
     pick_up_zone = configure_zones(1)
     pick_up_zone = pick_up_zone[0]
     ev3.screen.print("Configured pick up")
+    ev3.speaker.say("Configured pick up")
 
     ev3.screen.print("Configure drop zones")
     positions = configure_zones(CLIENT_NUM_ZONES, include_heights=True)
@@ -52,9 +57,9 @@ if __name__ == "__main__":
         if message == EXIT_MESSAGE:
             break
         if message == READY_MESSAGE:
-            rotationMotor.run_target(200, -pick_up_zone * ROTATION_GEAR_RATIO)
+            # rotationMotor.run_target(200, -pick_up_zone * ROTATION_GEAR_RATIO)
             is_sorted = sort(color_dict, pick_up_zone, include_heights=True)
-            rotationMotor.run_target(200, 0)
+            reset_position()
             if is_sorted:
                 mbox.send(READY_MESSAGE)
             else:

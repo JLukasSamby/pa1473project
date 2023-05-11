@@ -144,6 +144,7 @@ def init_rotation_motor(verbose=False):
 
 
 def init(verbose=False):
+    ev3.speaker.say(“Resetting”)
     init_rotation_motor(verbose=verbose)
     init_claw_motor(verbose=verbose)
     init_crane_motor(verbose=verbose)
