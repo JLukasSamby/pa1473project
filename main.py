@@ -102,7 +102,8 @@ rotationMotor.control.limits(speed=VERY_HIGH_SPEED, acceleration=120)
 
 
 def init_claw_motor(verbose=False):
-    """Initialize claw motor such that CLAW_CLOSED_ANGLE"""
+    """Initialize claw motor such that CLAW_CLOSED_ANGLE is the
+    angle when the claw is closed."""
     if verbose:
         print("Stage 1. Calibrating the claw")
         ev3.speaker.beep(frequency=500, duration=100)
@@ -112,7 +113,8 @@ def init_claw_motor(verbose=False):
 
 
 def init_crane_motor(verbose=False):
-    """Initialize"""
+    """Initialize crane motor such that the zero position
+    is when a brick will be in front off the color sensor."""
     if verbose:
         print("Stage 2. Calibrating the crane")
         for _ in range(2):
@@ -127,6 +129,8 @@ def init_crane_motor(verbose=False):
 
 
 def init_rotation_motor(verbose=False):
+    """Initialize rotation motor such that the zero position
+    will be at the most clockwise position of rotation."""
     if verbose:
         print("Stage 3. Calibrating the rotation motor")
         for _ in range(3):
@@ -392,7 +396,7 @@ def item_in_place(angle=None, height=None):
     pick(angle=angle, height=height)
     claw_angle = clawMotor.angle()
     drop(angle=angle, height=height)
-    return claw_angle < CLAW_OPEN_ANGLE - 5
+    return claw_angle < CLAW_CLOSED_ANGLE + 10
 
 
 def notify(message: str) -> None:
@@ -403,31 +407,24 @@ def notify(message: str) -> None:
 
 
 if __name__ == "__main__":
-    ev3.speaker.say("""Look, I was gonna go easy on you not to hurt your feelings. But Im only going to get this one chance. Somethings wrong, I can feel it" (Six minutes, Slim Shady, youre on.Just a feeling Ive got, like somethings about to happen, but I dont know what. 
-If that means what I think it means, we're in trouble, big trouble; 
-And if he is as bananas as you say, I'm not taking any chances"
-"You are just what the doc ordered"
-chorus:
-I'm beginnin' to feel like a Rap God, Rap God
-All my people from the front to the back nod, back nod
-Now, who thinks their arms are long enough to slap box, slap box?
-They said I rap like a robot, so call me Rap-bot
-verse 1:
-But for me to rap like a computer it must be in my genes
-I got a laptop in my back pocket
-My pen'll go off when I half-cock it
-Got a fat knot from that rap profit
-Made a livin' and a killin' off it
-Ever since Bill Clinton was still in office
-With Monica Lewinsky feelin' on his nutsack
-""") # rap god lyrics
+    ev3.speaker.set_speech_options(language=None, voice='f3', speed=300, pitch=None)
+#     ev3.speaker.say("""Look, I was gonna go easy on you not to hurt your feelings. But Im only going to get this one chance. Somethings wrong, I can feel it" (Six minutes, Slim Shady, youre on.Just a feeling Ive got, like somethings about to happen, but I dont know what. 
+# If that means what I think it means, we're in trouble, big trouble; 
+# And if he is as bananas as you say, I'm not taking any chances"
+# "You are just what the doc ordered"
+# chorus:
+# I'm beginnin' to feel like a Rap God, Rap God
+# All my people from the front to the back nod, back nod
+# Now, who thinks their arms are long enough to slap box, slap box?
+# They said I rap like a robot, so call me Rap-bot
+# verse 1:
+# But for me to rap like a computer it must be in my genes
+# I got a laptop in my back pocket
+# My pen'll go off when I half-cock it
+# Got a fat knot from that rap profit
+# Made a livin' and a killin' off it
+# Ever since Bill Clinton was still in office
+# With Monica Lewinsky feelin' on his nutsack
+# """) # rap god lyrics
     init()
-    pick()
-    drop(angle=90, height=0)
-    pick()
-    drop(angle=90)
-    pick()
-    drop()
-    pick()
-    drop(height=0)
-
+    notify(str(item_in_place()))
