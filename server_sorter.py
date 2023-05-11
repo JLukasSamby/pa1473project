@@ -65,4 +65,4 @@ if __name__ == "__main__":
         print("Waiting for next brick...")
         ev3.screen.print("Waiting for next brick")
         ev3.speaker.say("Waiting for next brick")
-        wait(5000)
+        wait(5001)
