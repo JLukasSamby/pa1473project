@@ -46,20 +46,23 @@ if __name__ == "__main__":
     ev3.speaker.say("Configured pick up")
 
     ev3.screen.print("Configure drop zones")
+    ev3.speaker.say("Configure drop zones")
     positions = configure_zones(CLIENT_NUM_ZONES, include_heights=True)
     ev3.screen.print("Configured drop zones")
+    ev3.speaker.say("Configured drop zones")
     color_dict = generate_client_color_dictionary(positions)
 
     while True:
         ev3.screen.print("Waiting for instruction")
+        ev3.speaker.say("Waiting for instruction")
         mbox.wait()
         message = mbox.read()
         if message == EXIT_MESSAGE:
             break
         if message == READY_MESSAGE:
             # rotationMotor.run_target(200, -pick_up_zone * ROTATION_GEAR_RATIO)
-            is_sorted = sort(color_dict, pick_up_zone, include_heights=True)
-            reset_position()
+            is_sorted = sort(color_dict, pick_up_zone, include_heights=True, sort_sign=-1)
+            rotationMotor.run_target(-200, 0)
             if is_sorted:
                 mbox.send(READY_MESSAGE)
             else:

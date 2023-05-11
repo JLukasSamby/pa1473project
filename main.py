@@ -332,16 +332,16 @@ def configure_sorting_locations():
     return pick_up_zone, drop_off_zones
 
 
-def sort(color_dictionary=COLOR_DICTIONARY, angle=0, include_heights=False):
+def sort(color_dictionary=COLOR_DICTIONARY, angle=0, include_heights=False, sort_sign=1):
     pick_item_at(angle)
     color = get_color()
     if color not in color_dictionary:
         drop_item_at(angle)
         return False
     if include_heights:
-        drop_item_at_height(*color_dictionary[color])
+        drop_item_at_height(sort_sign * color_dictionary[color][0], color_dictionary[color][1])
     else:
-        drop_item_at(color_dictionary[color])
+        drop_item_at(sort_sign*color_dictionary[color])
     return True
 
 
