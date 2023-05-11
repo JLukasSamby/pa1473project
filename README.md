@@ -13,9 +13,13 @@ There is a gear ratio of 0.2 between crane motor and claw angle.
 
 
 # scope
-    Can pick up and drop bricks.
+    Can pick up and drop bricks from diffrent heights and angles.
     Tell the colour of various bricks.
+    tell if a item is at a given location.
     having specific drop location for dirffrent colours
     Create custom drop off zones for diffrent colours
+    Be either a sevrer or client and commiunicate with a robot.
+
+## Building and running
 
 
