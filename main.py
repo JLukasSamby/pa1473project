@@ -25,8 +25,8 @@ INIT_COLOR_REFLECTION_THRESHOLD = 12
 # Speed constant
 LOW_SPEED = 30
 MEDIUM_SPEED = 45
-HIGH_SPEED = 60
-VERY_HIGH_SPEED = 80
+HIGH_SPEED = 80
+VERY_HIGH_SPEED = 120
 
 # Port constants
 TOUCH_SENSOR_PORT = Port.S1
@@ -45,6 +45,8 @@ ROTATION_SMALL_GEAR_TOOTHCOUNT = 12
 ROTATION_GEAR_RATIO = ROTATION_BIG_GEAR_TOOTHCOUNT / ROTATION_SMALL_GEAR_TOOTHCOUNT
 
 # Angle constants
+CRANE_RESTING_HIGH_ANGLE = 40
+
 COLOR_TO_FLOOR_ANGLE = 30 * CRANE_GEAR_RATIO
 CLAW_HEIGHT_IN_DEGREES_OF_CRANE_ROTATION = 13
 
@@ -178,13 +180,16 @@ def do_at(angle, func, *args):
     if angle > MAX_ROTATION_ANGLE or angle < MIN_ROTATION_ANGLE:
         raise ValueError("Use angle in range [0, 190].")
 
-    initialAngle = rotationMotor.angle()
+    initialRotationAngle = rotationMotor.angle()
+    initialCraneAngle = craneMotor.angle()
+    craneMotor.run_target(HIGH_SPEED, -CRANE_GEAR_RATIO * CRANE_RESTING_HIGH_ANGLE)
     rotationMotor.run_target(VERY_HIGH_SPEED, -ROTATION_GEAR_RATIO * angle)
     if len(args) > 0:
         return_value = func(*args)
     else:
         return_value = func()
-    rotationMotor.run_target(VERY_HIGH_SPEED, ROTATION_GEAR_RATIO * initialAngle)
+    rotationMotor.run_target(VERY_HIGH_SPEED, ROTATION_GEAR_RATIO * initialRotationAngle)
+    craneMotor.run_target(HIGH_SPEED, CRANE_GEAR_RATIO * initialCraneAngle)
     return return_value
 
 
@@ -326,13 +331,16 @@ def configure_sorting_locations():
     return pick_up_zone, drop_off_zones
 
 
-def sort(color_dictionary=COLOR_DICTIONARY, angle=0):
+def sort(color_dictionary=COLOR_DICTIONARY, angle=0, include_heights=False):
     pick_item_at(angle)
     color = get_color()
     if color not in color_dictionary:
         drop_item_at(angle)
         return False
-    drop_item_at(color_dictionary[color])
+    if include_heights:
+        drop_item_at_height(*color_dictionary[color])
+    else:
+        drop_item_at(color_dictionary[color])
     return True
 
 
@@ -359,30 +367,34 @@ def configure_height_and_angle_positions():
             craneMotor.hold()
 
         if Button.RIGHT in pressed and rotationMotor.angle() / ROTATION_GEAR_RATIO < MIN_ROTATION_ANGLE:
-            rotationMotor.run(HIGH_SPEED)
+            rotationMotor.run(VERY_HIGH_SPEED)
         elif Button.LEFT in pressed and rotationMotor.angle() / ROTATION_GEAR_RATIO > -MAX_ROTATION_ANGLE:
-            rotationMotor.run(-HIGH_SPEED)
+            rotationMotor.run(-VERY_HIGH_SPEED)
         else:
             rotationMotor.hold()
         wait(CHECK_INTERVAL_IN_MILLISECONDS)
 
-    rotationMotor.run_target(HIGH_SPEED, initial_rotation)
+    craneMotor.run_target(HIGH_SPEED, -CRANE_GEAR_RATIO * CRANE_RESTING_HIGH_ANGLE)
+    rotationMotor.run_target(VERY_HIGH_SPEED, initial_rotation)
     craneMotor.run_target(HIGH_SPEED, initial_crane_height)
     return angle_rotation, angle_crane
 
 
 def reset_position():
-    craneMotor.run_target(HIGH_SPEED, 0)
-    rotationMotor.run_target(HIGH_SPEED, 0)
+    craneMotor.run_target(VERY_HIGH_SPEED, 0)
+    rotationMotor.run_target(VERY_HIGH_SPEED, 0)
 
 
-def configure_zones(number_of_zones):
+def configure_zones(number_of_zones, include_heights=False):
     lst = []
     ev3.screen.print("Configuring zones...")
     for i in range(number_of_zones):
         ev3.screen.print("\tzone: " + str(i))
         angle_rotation, angle_crane = configure_height_and_angle_positions()
-        lst.append(angle_rotation)
+        if include_heights:
+            lst.append((angle_rotation, angle_crane))
+        else:
+            lst.append(angle_rotation)
     ev3.screen.print("DONE configuring zones")
     return lst
 

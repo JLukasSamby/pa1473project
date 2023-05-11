@@ -16,12 +16,19 @@ from main import init
 SERVER_NUM_ZONES = 3
 
 
-def generate_server_color_dictionary(positions):
-    return {
-        Color.GREEN: positions[0],
-        Color.YELLOW: positions[1],
-        Color.RED: positions[2]
-    }
+def generate_server_color_dictionary(angles, heights=None):
+    if heights is None:
+        return {
+            Color.GREEN: angles[0],
+            Color.YELLOW: angles[1],
+            Color.RED: angles[2]
+        }
+    else:
+        return {
+            Color.GREEN: (angles[0], heights[0]),
+            Color.YELLOW: (angles[1], heights[1]),
+            Color.RED: (angles[2], heights[2])
+        }
 
 
 if __name__ == "__main__":
@@ -38,12 +45,12 @@ if __name__ == "__main__":
     ev3.screen.print("init started")
 
     ev3.screen.print("Configure drop zones")
-    positions = configure_zones(SERVER_NUM_ZONES)
+    (angles, heights) = configure_zones(SERVER_NUM_ZONES, include_heights=True)
     ev3.screen.print("Configured drop zones")
-    color_dict = generate_server_color_dictionary(positions)
+    color_dict = generate_server_color_dictionary(angles, heights)
 
     while True:
-        is_sorted = sort(color_dict, 0)
+        is_sorted = sort(color_dict, 0, include_heights=True)
         if not is_sorted:
             rotationMotor.run_target(200, -90 * ROTATION_GEAR_RATIO)
             mbox.send(READY_MESSAGE)
