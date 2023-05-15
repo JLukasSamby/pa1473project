@@ -35,7 +35,6 @@ def notify(message: str) -> None:
 def configure_height_and_angle_positions() -> tuple:
     """
     Configure a specific zone by pressing buttons on the robot. 
-    Returns the horisontal rotation, and vertical rotation; the position of the arm position.
 
     Use buttons on the ev3 to change height and move left and right. Center button to commit position.
 
@@ -78,8 +77,21 @@ def configure_height_and_angle_positions() -> tuple:
 
 
 def configure_zones(number_of_zones, include_heights=False):
-    """Use buttons to configre number_of_zones zones.
-    Return format is list containing tuples of (rotationAngle, heightAngle)"""
+    """
+    Configure some number of zones using the buttons.
+
+    Use buttons on the ev3 to change height and move left and right. Center button to commit position.
+
+    Parameters:
+      number_of_zones (int): number of zones to configure
+      include_heights (bool): Whether to include the heights in the list. Default False.
+
+    Returns:
+      if include_heights:
+        lst[tuple(angle (float), height (float))]: list of tuples of angle and height of commited positions.
+      else:
+        lst[float]: list of angles
+    """
     lst = []
     notify("Configuring zones")
 
