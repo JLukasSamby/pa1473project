@@ -20,17 +20,16 @@ This section is supposed to guide a new developer through the steps of how to se
 
 
 ## Building and running
-if using the the two communication function for the robots, the robots when run will wait on the other robot to run too. after both robots are conncted and sends to the user that they are connected.they will start there init() fucnition which resets robot to there defult postions.
-there from the the client robot with the use of the button interface of the ev3 pick the postion(height,angle) of the pickup zone it willl share with the server, and then you will choose 2 drop off zones for the robot,The server robot has it's defult postion, it only need with the same kind of button interface choose 3 drop off zones.
+# shared runned 
+    if using the the two communication function for the robots, the robots when run will wait on the other robot to run too. after both robots are conncted and sends to the user that they are connected.they will start there init() fucnition which resets robot to there defult postions.
+# client robot    
+there from the the client robot with the use of the button interface of the ev3 pick the postion(height,angle) of the pickup zone it willl share with the server, and then you will choose 2 drop off zones for the robot.
+# server robot
+The server robot has it's defult postion, it only need with the same kind of button interface choose 3 drop off zones.
 
-#after set up:
-	the server robot will start to try to pick up the item in the pickup zone,it will see what color it is, check if that said color is one part of its color to sort, if true it will sort it at that color asigned drop of zone. if false the robot will place the item down onthe pick up zone.
+# after set up:
+the server robot will start to try to pick up the item in the pickup zone,it will see what color it is, check if that said color is one part of its color to sort, if true it will sort it at that color asigned drop of zone. if false the robot will place the item down onthe pick up zone.
 and move away and give the client robot signal for it to pick up the item.	  
-
-This is where you explain how to make the project run. What is your startup procedure? Does the program accept different arguments to do different things?
-
-You should also describe how to operate your program. Does it need manual input before it starts picking up and sorting the items?Client will check the brick to see if its one its color to sort if true it places teh item in its repictive drop off zone, if false it "x1trows" the item away.
-will wait for the server to look at a a new brick 
 
 
 ## Features
