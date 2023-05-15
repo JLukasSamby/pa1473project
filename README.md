@@ -19,7 +19,24 @@ With the extension 'LEGO® MINDSTORMS® EV3 MicroPython' to able to run your cod
 For a more in depth guide on how to setup EV3 Micropython see the ev3 docs: https://pybricks.com/ev3-micropython/startrun.html.
 
 ### Robot setup
-The robots can be set up in multiple ways.
+To get started, you’ll need:
+
+    A Windows 10 or Mac OS computer
+
+    Internet access and administrator access
+
+        This is required during the installation only. You will not need special access to write and run programs later on.
+
+    A microSD card
+
+        You’ll need a card with a minimum capacity of 4GB and a maximum capacity of 32GB. This type of microSD card is also known as microSDHC. We recommend cards with Application Performance Class A1.
+
+    A microSD card slot or card reader in your computer
+
+        If your computer does not have a (micro)SD card slot, you can use an external USB (micro)SD card reader.
+
+    A mini-USB cable, like the one included with your EV3 set
+
 
 
 #### with a computer
