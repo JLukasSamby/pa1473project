@@ -33,22 +33,7 @@ bluetooth which can be done in their corresponding ev3 hub menus. See https://py
 
 
 ## Program description
-The program is split into two files. If placing the robots like below and observing from OBSERVER. The left robot should
-be the client and the right robot the server. 
-
-<div>
-/-----\    /-----\\n
-| Ev3 |    | Ev3 |\n
-| Hub |    | Hub |
-\-----/    \-----/
-/-----\    /-----\    
-| Cr  |    | Cr  |
-| ane |    | ane |
-\-----/    \-----/
-
-------------------
-    OBSERVER
-</div>
+The program is split into two files. If observing the robots from the south with the arm south and ev3 hub north, then the western robot is the client and the eastern is the server. 
     
 
 ## Building and running
