@@ -24,6 +24,8 @@ def sort_periodically_at(period, angle, color_dictionary=COLOR_DICTIONARY):
 
 
 def sort(color_dictionary, angle=0, include_heights=False, sort_sign=1):
+    """Sorts the item and drops off at correct position. Returns True if successful
+    and False if the color is not in the current color dictionairy"""
     pick(angle=angle)
     color = get_color()
     if color not in color_dictionary:
