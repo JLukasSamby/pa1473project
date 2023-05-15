@@ -1,4 +1,7 @@
 #!/usr/bin/env pybricks-micropython
+"""
+This is collection of functions used to for different sorting tasks
+"""
 from core import item_in_place, pick, drop, get_color,hold
 from constants import COLOR_DICTIONARY
 from io import notify
