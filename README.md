@@ -1,12 +1,4 @@
-# PA1473 - Software Development: Agile Project (Template)
-
-## Template information
-This template should help your team write a good readme-file for your project. (The file is called README.md in your project directory.)
-You are of course free to add more sections to your readme if you want to.
-
-Readme-files on GitHub are formatted using Markdown. You can find information about how to format using Markdown here: https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
-
-Your readme-file should include the following sections:
+# PA1473 - Software Development: Agile Project 
 
 
 ## Introduction
@@ -15,8 +7,30 @@ The project also goes into the communication between two diffrent ev3 robots.
 
 
 ## Getting started
+### The robot
+the robot is a legoev3 with a functioning crane and claw.
 
-This section is supposed to guide a new developer through the steps of how to set up the project and install the deppendencies they need to start developing.
+### coding enviroment
+using vscode as platform with the programming langue python.
+With the extension 'LEGO® MINDSTORMS® EV3 MicroPython' to able to run your code on the ev3dev.
+
+
+### setup robots.
+The robots can be set up in multiple ways.
+
+#### with a computer
+with a computer you can either with bluetoth or cable connect to the robot to run your program on 
+
+#### runing code in ev3dev
+you can with either with the blutoth connecction or cable download your code to the robot to run.
+in use when running mulipte robots without acces to mulitple computers to help run the robots.
+
+### connecting server and client
+with the function to use one robot as bluetooth host and other 
+robot can then connect  to the first and start a connection.
+this connection is used for the robots to send messages
+
+
 
 
 ## Building and running
