@@ -21,11 +21,27 @@ For a more in depth guide on how to setup EV3 Micropython see the ev3 docs: http
 ### Robot setup
 The robots can be set up in multiple ways.
 
-#### With a computer
-With a computer you can either upload and run code with bluetooth or a cable connected to the ev3 hub.
 
-#### Runing code in ev3dev
+#### with a computer
+With a computer you can either upload and run code with bluetooth or a cable connected to the ev3 hub. 
+Preparing your computer
+
+You’ll write your MicroPython programs using Visual Studio Code. Follow the steps below to download, install, and configure this application:
+
+    1) Download Visual Studio Code.
+    2) Follow the on-screen instructions to install the application.
+    3) Launch Visual Studio Code.
+    4) Open the extensions tab.
+    5) Install the EV3 MicroPython extension as shown in Figure 2.
+
+
+#### runing code in ev3dev
 If code is already uploaded to the ev3 hub it can be run using the hub. See https://pybricks.com/ev3-micropython/startbrick.html.
+
+You can press the F5 key in VSCode to run the program. Alternatively, you can start it manually by going to the debug tab and clicking the green start arrow, as shown in Figure 13.
+When the program starts, a pop-up toolbar allows you to stop the program if necessary. You can also stop the program at any time using the back button on the EV3 Brick.
+
+If your program produces any output with the print command, this is shown in the output window.
 
 ### Connecting server and client
 To have the robots work as intended, please use two identical robots. They must be connected using
