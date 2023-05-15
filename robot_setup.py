@@ -1,4 +1,5 @@
 #!/usr/bin/env pybricks-micropython
+"""General settings and setups for the robot."""
 from constants import (
     COLOR_SENSOR_PORT,
     CLAW_MOTOR_PORT,
