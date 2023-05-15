@@ -1,4 +1,5 @@
 #!/usr/bin/env pybricks-micropython
+""" This module containts code for client(recvieng) robot"""
 from pybricks.messaging import TextMailbox, BluetoothMailboxClient
 from pybricks.parameters import Color
 from sorter_constants import MBOX_NAME, READY_MESSAGE, ERROR_MESSAGE, SERVER_NAME, EXIT_MESSAGE
