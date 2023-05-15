@@ -28,6 +28,10 @@ def notify(message: str) -> None:
 
 
 def configure_height_and_angle_positions():
+  """
+  Configure a specific zone by pressing buttons on the robot. 
+  Returns the horisontal rotation, and vertical rotation; the position of the arm position.
+  """
     initial_rotation = rotationMotor.angle()
     initial_crane_height = craneMotor.angle()
     clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE)

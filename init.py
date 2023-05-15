@@ -23,8 +23,15 @@ from core import hold
 
 
 def init_claw_motor(verbose=False):
-    """Initialize claw motor such that CLAW_CLOSED_ANGLE is the
-    angle when the claw is closed."""
+    """
+    Initialize the claw motor.
+
+    After initialization the reset angle (0) of the claw motor is
+    when the claw is closed.
+
+    Parameters:
+        verbose (bool): If to notify the user of initialization. Default False.
+    """
     if verbose:
         notify("Calibraint claw.")
 
@@ -34,8 +41,15 @@ def init_claw_motor(verbose=False):
 
 
 def init_crane_motor(verbose=False):
-    """Initialize crane motor such that the zero position
-    is when a brick will be in front off the color sensor."""
+    """
+    Initialize the crane motor.
+
+    After initialization the reset angle (0) of the crane motor is at the position
+    where a held brick will be at the height of the color sensor.
+
+    Parameters:
+        verbose (bool): If to notify the user of initialization. Default False.
+    """
     if verbose:
         notify("Calibrati crane.")
     craneMotor.run_time(-VERY_HIGH_SPEED, 4000)
@@ -48,21 +62,36 @@ def init_crane_motor(verbose=False):
 
 
 def init_rotation_motor(verbose=False):
-    """Initialize rotation motor such that the zero position
-    will be at the most clockwise position of rotation."""
+    """
+    Initialize the rotation motor.
+
+    After initialization the reset angle (0) of the rotation motor is at the
+    default drop off zone, when the robot pushes the pushbutton at rotation
+    base.
+
+    Parameters:
+        verbose (bool): If to notify the user of initialization. Default False.
+    """
     if verbose:
         notify("Calibrating rotation.")
 
     rotationMotor.run(MEDIUM_SPEED)
     while not touchSensor.pressed():
         hold(2)
-    rotationMotor.reset_angle(0)
+    rotationMotor.reset_angle(-3)
     rotationMotor.stop()
     rotationMotor.run_target(HIGH_SPEED, 0)
 
 
 def init(verbose=False):
-    notify("Reseting...")
+    """
+    Initialize the robots motors.
+
+    Parameters:
+        verbose (bool): If to notify the user of initialization. Default False.
+    """
+    if verbose:
+        notify("Initializing...")
     init_rotation_motor(verbose=verbose)
     init_claw_motor(verbose=verbose)
     init_crane_motor(verbose=verbose)
