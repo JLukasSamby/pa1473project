@@ -1,5 +1,10 @@
 #!/usr/bin/env pybricks-micropython
-""" This module containts sub-functions for pick activity """
+""" This module containts sub-functions for pick activity:
+    Open claw
+    Close claw
+    Drop item using run_until_stalled.
+    Drop item using preconfigured height
+"""
 from constants import (
     HIGH_SPEED,
     CLAW_OPEN_ANGLE,
