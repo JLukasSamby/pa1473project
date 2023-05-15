@@ -19,7 +19,7 @@ With the extension 'LEGO® MINDSTORMS® EV3 MicroPython' to able to run your cod
 The robots can be set up in multiple ways.
 
 #### with a computer
-with a computer you can either with bluetoth or cable connect to the robot to run your program on 
+with a computer you can either with bluetooth or cable connect to the robot to run your program on 
 
 #### runing code in ev3dev
 you can with either with the blutoth connecction or cable download your code to the robot to run.
@@ -42,8 +42,10 @@ there from the the client robot with the use of the button interface of the ev3 
 The server robot has it's defult postion, it only need with the same kind of button interface choose 3 drop off zones.
 
 ### after set up:
-the server robot will start to try to pick up the item in the pickup zone,it will see what color it is, check if that said color is one part of its color to sort, if true it will sort it at that color asigned drop of zone. if false the robot will place the item down onthe pick up zone.
-and move away and give the client robot signal for it to pick up the item.	  
+the server robot will start to try to pick up the item in the pickup zone,it will see what color it is, check if that said color is one part of its color to sort, if true it will sort it at that color asigned drop of zone. if false the robot will place the item down on the pick up zone.
+and move away and give the client robot signal for it to pick up the item.
+Client will check the brick to see if its one its color to sort if true it places the item in its respictive drop off zone, if false it "throws" the item away.
+Will wait for the server to look at a new brick. 	  
 
 
 ## Features
