@@ -1,4 +1,9 @@
 #!/usr/bin/env pybricks-micropython
+"""
+This file containts a collection of constants that are used across all functoions.
+They are gathered here to reduce cognitive load instead and reduce clutter.
+"""
+
 from pybricks.parameters import Color, Port
 
 
