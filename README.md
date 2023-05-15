@@ -37,8 +37,8 @@ The program is split into two files. If placing the robots like below and observ
 be the client and the right robot the server. 
 
 <div>
-/-----\    /-----\
-| Ev3 |    | Ev3 |
+/-----\    /-----\\n
+| Ev3 |    | Ev3 |\n
 | Hub |    | Hub |
 \-----/    \-----/
 /-----\    /-----\    
