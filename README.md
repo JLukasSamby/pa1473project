@@ -37,7 +37,8 @@ To get started, you’ll need:
 
     A mini-USB cable, like the one included with your EV3 set
 
-
+Read full guide here:
+https://pybricks.com/ev3-micropython/startinstall.html#updating-the-microsd-card
 
 #### with a computer
 With a computer you can either upload and run code with bluetooth or a cable connected to the ev3 hub. 
@@ -51,7 +52,8 @@ You’ll write your MicroPython programs using Visual Studio Code. Follow the st
     4) Open the extensions tab.
     5) Install the EV3 MicroPython extension as shown in Figure 2.
 
-
+Read full guide here:
+https://pybricks.com/ev3-micropython/startrun.html
 #### runing code in ev3dev
 If code is already uploaded to the ev3 hub it can be run using the hub. See https://pybricks.com/ev3-micropython/startbrick.html.
 
