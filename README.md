@@ -7,31 +7,47 @@ The project also goes into the communication between two diffrent ev3 robots.
 
 
 ## Getting started
+
 ### The robot
-the robot is a legoev3 with a functioning crane and claw.
+The used robot is similar to the H25 as seen in the ev3 docs: https://pybricks.com/ev3-micropython/examples/robot_arm.html.
+An important difference being the placement of the color sensor in the bottom of the crane arm to identify
+the colors of bricks held by the claw.
 
 ### coding enviroment
-using vscode as platform with the programming langue python.
+We recommend using VisualStudio Code as the platform for working with the ev3 robot. 
 With the extension 'LEGO® MINDSTORMS® EV3 MicroPython' to able to run your code on the ev3dev.
+For a more in depth guide on how to setup EV3 Micropython see the ev3 docs: https://pybricks.com/ev3-micropython/startrun.html.
 
-
-### setup robots.
+### robot setup
 The robots can be set up in multiple ways.
 
 #### with a computer
-with a computer you can either with bluetooth or cable connect to the robot to run your program on 
+With a computer you can either upload and run code with bluetooth or a cable connected to the ev3 hub.
 
 #### runing code in ev3dev
-you can with either with the blutoth connecction or cable download your code to the robot to run.
-in use when running mulipte robots without acces to mulitple computers to help run the robots.
+If code is already uploaded to the ev3 hub it can be run using the hub. See https://pybricks.com/ev3-micropython/startbrick.html.
 
 ### connecting server and client
-with the function to use one robot as bluetooth host and other 
-robot can then connect  to the first and start a connection.
-this connection is used for the robots to send messages
+To have the robots work as intended, please use two identical robots. They must be connected using
+bluetooth which can be done in their corresponding ev3 hub menus. See https://pybricks.com/ev3-micropython/messaging.html.
 
 
+## Program description
+The program is split into two files. If placing the robots like below and observing from OBSERVER. The left robot should
+be the client and the right robot the server. 
 
+/-----\    /-----\
+| Ev3 |    | Ev3 |
+| Hub |    | Hub |
+\-----/    \-----/
+/-----\    /-----\    
+| Cr  |    | Cr  |
+| ane |    | ane |
+\-----/    \-----/
+
+------------------
+    OBSERVER
+    
 
 ## Building and running
 ### shared runned 
