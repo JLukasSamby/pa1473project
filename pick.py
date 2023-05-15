@@ -1,4 +1,5 @@
 #!/usr/bin/env pybricks-micropython
+""" This module containts sub-functions for pick activity """
 from constants import (
     HIGH_SPEED,
     CLAW_OPEN_ANGLE,
