@@ -21,17 +21,27 @@ from core import hold
 
 
 def notify(message: str) -> None:
-    """Notify user through terminal, screen and speaker."""
+    """
+    Notify user through terminal, screen and speaker.
+    
+    Parameters:
+      message (str): message to notify user with.
+    """
     print(message)
     screen.print(message)
     speaker.say(message)
 
 
-def configure_height_and_angle_positions():
-  """
-  Configure a specific zone by pressing buttons on the robot. 
-  Returns the horisontal rotation, and vertical rotation; the position of the arm position.
-  """
+def configure_height_and_angle_positions() -> tuple:
+    """
+    Configure a specific zone by pressing buttons on the robot. 
+    Returns the horisontal rotation, and vertical rotation; the position of the arm position.
+
+    Use buttons on the ev3 to change height and move left and right. Center button to commit position.
+
+    Returns:
+      tuple(angle (float), height (float)): angle and height of commited positions
+    """
     initial_rotation = rotationMotor.angle()
     initial_crane_height = craneMotor.angle()
     clawMotor.run_target(HIGH_SPEED, CLAW_OPEN_ANGLE)
