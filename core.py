@@ -23,7 +23,17 @@ from robot_setup import (
 from io import notify
 
 
-def do_at(angle, func, *args, should_return=True) -> any:
+def do_at(angle: float, func: "Callable", *args: "tuple", should_return=True) -> any:
+    """
+    Rotate to given angle and perform the function with given args. 
+
+    Parameters:
+        angle (float): angle to drop at
+        func (Callable(...)): callable which parameters match that of *args
+        args (tuple): tuple containing the arguments to be unpacked when calling func
+        should_return (bool): if the initial position should be returned to after rotation
+                              and executing func. Default True.
+    """
     if angle > MAX_ROTATION_ANGLE or angle < MIN_ROTATION_ANGLE:
         raise ValueError("Use angle in range [0, 190].")
 
@@ -56,7 +66,8 @@ def pick(angle: float=None, height: float=None, should_return: bool=True):
     Parameters:
         angle (float): the rotation angle to check
         height (float): the height to check (given in degrees of crane rotation)
-        shold_return (bool): if the initial position should be returned to after drop
+        shold_return (bool): if the initial position should be returned to after drop.
+                             Default True.
 
     Returns:
         Rgb: the current rgb values read from sensor
@@ -84,9 +95,11 @@ def drop(
     floor height.
 
     Parameters:
-        angle (float): the rotation angle to check
-        height (float): the height to check (given in degrees of crane rotation)
-        shold_return (bool): if the initial position should be returned to after drop
+        angle (float): the rotation angle to check. Default None.
+        height (float): the height to check (given in degrees of crane rotation). Default
+                        None.
+        shold_return (bool): if the initial position should be returned to after drop.
+                             Default True.
 
     Returns:
         Rgb: the current rgb values read from sensor
@@ -111,8 +124,9 @@ def item_in_place(angle: float=None, height: float=None) -> bool:
     floor height.
 
     Parameters:
-        angle (float): the rotation angle to check
-        height (float): the height to check (given in degrees of crane rotation)
+        angle (float): the rotation angle to check. Default None.
+        height (float): the height to check (given in degrees of crane rotation).
+                        Default None.
 
     Returns:
         bool: if there is an item present
@@ -134,7 +148,8 @@ def drop_item_by_color(color: "Color", color_dictionary: dict=COLOR_DICTIONARY) 
 
     Parameters:
         color (Color): the color of the brick
-        color_dictionary (dict): the dictionary with positions for different colors
+        color_dictionary (dict): the dictionary with positions for different colors.
+                                 Default COLOR_DICTIONARY, see constants.py.
     """
     try:
         angle = color_dictionary[color]
