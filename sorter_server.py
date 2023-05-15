@@ -1,22 +1,16 @@
 #!/usr/bin/env pybricks-micropython
-from main import (
-    rotationMotor,
-    craneMotor,
-    ROTATION_GEAR_RATIO,
-    CRANE_GEAR_RATIO,
-    CRANE_RESTING_HIGH_ANGLE,
-    sort,
-    configure_zones,
-    notify,
-    item_in_place,
-    hold
-)
 from pybricks.messaging import BluetoothMailboxServer, TextMailbox
 from pybricks.parameters import Color
-from sorter import MBOX_NAME, READY_MESSAGE, ERROR_MESSAGE
-from main import init
-
+from sorter_constants import MBOX_NAME, READY_MESSAGE, ERROR_MESSAGE
+from init import init
+from io import notify, configure_zones
+from core import hold, item_in_place
+from sort import sort
+from constants import(CRANE_GEAR_RATIO,
+                    ROTATION_GEAR_RATIO,
+                    CRANE_RESTING_HIGH_ANGLE)
 SERVER_NUM_ZONES = 3
+from robot_setup import craneMotor, rotationMotor
 
 
 def generate_server_color_dictionary(positions):

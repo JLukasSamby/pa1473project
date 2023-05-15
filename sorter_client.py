@@ -1,15 +1,11 @@
 #!/usr/bin/env pybricks-micropython
-from pybricks.messaging import BluetoothMailboxClient, TextMailbox
+from pybricks.messaging import TextMailbox, BluetoothMailboxClient
 from pybricks.parameters import Color
-from sorter import MBOX_NAME, EXIT_MESSAGE, READY_MESSAGE, SERVER_NAME, ERROR_MESSAGE
-from main import (
-    init,
-    rotationMotor,
-    sort,
-    configure_zones,
-    notify,
-    ev3
-)
+from sorter_constants import MBOX_NAME, READY_MESSAGE, ERROR_MESSAGE, SERVER_NAME, EXIT_MESSAGE
+from init import init
+from io import notify, configure_zones
+from sort import sort
+from robot_setup import rotationMotor
 
 
 CLIENT_NUM_ZONES = 2
@@ -23,7 +19,6 @@ def generate_client_color_dictionary(positions):
 
 
 if __name__ == "__main__":
-    ev3
     client = BluetoothMailboxClient()
     mbox = TextMailbox(MBOX_NAME, client)
 
@@ -50,9 +45,9 @@ if __name__ == "__main__":
         if message == EXIT_MESSAGE:
             break
         if message == READY_MESSAGE:
-            is_sorted = sort(color_dict, pick_up_zone, include_heights=True, sort_sign=-1)
+            isSorted = sort(color_dict, pick_up_zone, include_heights=True, sort_sign=-1)
             rotationMotor.run_target(-200, 0)
-            if is_sorted:
+            if isSorted:
                 mbox.send(READY_MESSAGE)
             else:
                 mbox.send(ERROR_MESSAGE)
