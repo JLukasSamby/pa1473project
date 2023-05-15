@@ -149,7 +149,7 @@ def drop_item_by_color(color: "Color", color_dictionary: dict=COLOR_DICTIONARY) 
     Parameters:
         color (Color): the color of the brick
         color_dictionary (dict): the dictionary with positions for different colors.
-                                 Default COLOR_DICTIONARY, see constants.py.
+        Default COLOR_DICTIONARY, see constants.py.
     """
     try:
         angle = color_dictionary[color]
