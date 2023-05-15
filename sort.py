@@ -10,6 +10,7 @@ def check_periodically_at(period, angle):
     while True:
         if item_in_place(angle):
             notify("Item found.")
+
         else:
             notify("No item found.")
         hold(period)
