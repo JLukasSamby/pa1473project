@@ -13,21 +13,21 @@ The used robot is similar to the H25 as seen in the ev3 docs: https://pybricks.c
 An important difference being the placement of the color sensor in the bottom of the crane arm to identify
 the colors of bricks held by the claw.
 
-### coding enviroment
+### Coding enviroment
 We recommend using VisualStudio Code as the platform for working with the ev3 robot. 
 With the extension 'LEGO® MINDSTORMS® EV3 MicroPython' to able to run your code on the ev3dev.
 For a more in depth guide on how to setup EV3 Micropython see the ev3 docs: https://pybricks.com/ev3-micropython/startrun.html.
 
-### robot setup
+### Robot setup
 The robots can be set up in multiple ways.
 
-#### with a computer
+#### With a computer
 With a computer you can either upload and run code with bluetooth or a cable connected to the ev3 hub.
 
-#### runing code in ev3dev
+#### Runing code in ev3dev
 If code is already uploaded to the ev3 hub it can be run using the hub. See https://pybricks.com/ev3-micropython/startbrick.html.
 
-### connecting server and client
+### Connecting server and client
 To have the robots work as intended, please use two identical robots. They must be connected using
 bluetooth which can be done in their corresponding ev3 hub menus. See https://pybricks.com/ev3-micropython/messaging.html.
 
@@ -37,15 +37,15 @@ The program is split into two files. If observing the robots from the south with
     
 
 ## Building and running
-### shared runned 
-if using the the two communication function for the robots, the robots when run will wait on the other robot to run too. after both robots are conncted and sends to the user that they are connected.they will start there init() fucnition which resets robot to there defult postions.
-### client robot    
-there from the the client robot with the use of the button interface of the ev3 pick the postion(height,angle) of the pickup zone it willl share with the server, and then you will choose 2 drop off zones for the robot.
-### server robot
+### Shared runned 
+If using the the two communication function for the robots, the robots when run will wait on the other robot to run too. after both robots are conncted and sends to the user that they are connected.they will start there init() fucnition which resets robot to there defult postions.
+### Client robot    
+There from the the client robot with the use of the button interface of the ev3 pick the postion(height,angle) of the pickup zone it willl share with the server, and then you will choose 2 drop off zones for the robot.
+### Server robot
 The server robot has it's defult postion, it only need with the same kind of button interface choose 3 drop off zones.
 
-### after set up:
-the server robot will start to try to pick up the item in the pickup zone,it will see what color it is, check if that said color is one part of its color to sort, if true it will sort it at that color asigned drop of zone. if false the robot will place the item down on the pick up zone.
+### After set up:
+The server robot will start to try to pick up the item in the pickup zone,it will see what color it is, check if that said color is one part of its color to sort, if true it will sort it at that color asigned drop of zone. if false the robot will place the item down on the pick up zone.
 and move away and give the client robot signal for it to pick up the item.
 Client will check the brick to see if its one its color to sort if true it places the item in its respictive drop off zone, if false it "throws" the item away.
 Will wait for the server to look at a new brick. 	  
