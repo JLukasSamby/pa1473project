@@ -2,8 +2,7 @@
 
 
 ## Introduction
-this project goes out on to make use of a lego ev3dev to perform varoius task in the form of user stories.The task ranges from picking up item and sorting based the color of the items.
-The project also goes into the communication between two diffrent ev3 robots.
+The program intends for two connected EV3 robot arms to sort lego bricks of type 3003 of different color together. The program is most easily used with pybricks and VSCode. Please see the pybricks docs for additional information about the EV3 system and its capabilities: https://pybricks.com/ev3-micropython/.
 
 
 ## Getting started
