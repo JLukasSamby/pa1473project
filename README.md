@@ -68,33 +68,39 @@ bluetooth which can be done in their corresponding ev3 hub menus. See https://py
 
 
 ## Program description
-The purpose of the program is to sort large 2x2 lego bricks (Lego brick 3003) of different colors {Black, Blue, Green, Red, Yellow}. This is done by configuring zones where to sort
-the different bricks using two connected robot arms. The two Robot arms should be connected through bluetooth via the EV3 Hub interface. 
+The purpose of the program is to sort large 2x2 lego bricks (Lego brick 3003) of different colors {Black, Blue, Green, Red, Yellow}. This is done by configuring zones where to sort the different bricks using two connected robot arms. The two Robot arms should be connected through bluetooth via the EV3 Hub interface. 
 
-The program is split into two files. If observing the robots from the south with the arm south and ev3 hub north, then the western robot is the client and the eastern is the server.
-The client should run the `sorter_client.py` file and the server should run the `sorter_server.py` file. The server will handle Green, Red and Yellow bricks and the client
-Black and Blue bricks. 
+The program is split into two files. If observing the robots from the south with the arm south and ev3 hub north, then the western robot is the client and the eastern is the server. The client should run the `sorter_client.py` file and the server should run the `sorter_server.py` file. The server will handle Green, Red and Yellow bricks and the client Black and Blue bricks. 
 
-When starting the programs the robots will attempt to connect to each other. If successful they will both proceed with an initialization procedure. After the initialization is done,
-3 zones must be configured for both robots and then placing a brick inbetween the robots should have them sort the brick together (if the brick is Green, Red or Yellow the server will
-sort it, and otherwise the client will be told to sort it). When a brick is sorted the server will prompt the user that it is `waiting for next brick`, please place a new brick to
-continue sorting, or nothing to cancel the sorting procedure.
+When starting the programs the robots will attempt to connect to each other. If successful they will both proceed with an initialization procedure. After the initialization is done, 3 zones must be configured for both robots and then placing a brick inbetween the robots should have them sort the brick together (if the brick is Green, Red or Yellow the server will sort it, and otherwise the client will be told to sort it). When a brick is sorted the server will prompt the user that it is `waiting for next brick`, please place a new brick to continue sorting. If no brick is placed within 5 seconds, the robot will continue to loop and wait for a new brick to sort. To abort the procedure use the interface on the EV3 Hubs or cancel the program from the computer.
     
 
 ## Building and running
-### Shared runned 
-If using the the two communication function for the robots, the robots when run will wait on the other robot to run too. after both robots are conncted and sends to the user that they are connected.they will start there init() fucnition which resets robot to there defult postions.
-### Client robot    
-There from the the client robot with the use of the button interface of the ev3 pick the postion(height,angle) of the pickup zone it willl share with the server, and then you will choose 2 drop off zones for the robot.
-### Server robot
-The server robot has it's defult postion, it only need with the same kind of button interface choose 3 drop off zones.
 
-### After set up:
-The server robot will start to try to pick up the item in the pickup zone,it will see what color it is, check if that said color is one part of its color to sort, if true it will sort it at that color asigned drop of zone. if false the robot will place the item down on the pick up zone.
-and move away and give the client robot signal for it to pick up the item.
-Client will check the brick to see if its one its color to sort if true it places the item in its respictive drop off zone, if false it "throws" the item away.
-Will wait for the server to look at a new brick. 	  
+### Connecting the robots
+To connect the robots please navigate the bluetooth menus. If the robots have been used before it might be easiest to remove all other bluetooth devices before setting one of the robots to visible, this way its clear which is the robot supposed to be connected to. After successful connection there will be a prompt on both EV3 Hubs, the prompt will ask to accept connection, please accept the connection to proceed. For more information please read the EV3 Documentation and specifically see: https://pybricks.com/ev3-micropython/messaging.html.
 
+### Starting the program
+Please refer to the pybricks documentation for a detailed guide. Documentation: https://pybricks.com/ev3-micropython/startrun.html. 
+
+### Starting Order
+It is recommended to start the server program first and wait until notified with `waiting for connection`. Then please start the client program.
+
+### Server Robot
+When the connection is finished and initialization of the server robot is done 3 zones need to be manually configured using the buttons on the EV3 Hub. The left and right buttons will rotate the robot counter-clockwise and clockwise respectively (seen from above), the up and down buttons will move the crane arm up and down to select a specific height. Note that it is important to select the specific height, for example, if the height is left unchanged the robot will drop the item at that height even though there is no platform at that height! When the robot arm is in the intended position please press the center button that will commmit the position. The first position commited will corresponds to that sorting Green bricks, the second for Yellow bricks and the third for Red bricks. When configuration of the server robot is done the robot will wait for the client to finish configuration before prompting the user to provide a brick for sorting.
+
+### Client Robot
+Just as with the server robot after initialization 3 zones must be configured in the same way. The first zone is the pick up zone. Please configure this zone to be the starting zone of the client robot, it might be easiest to configure this zone while configuring one of the other zones of the server robot as it can be manually moved out of the way. The second zone corresponds to the sorting location of Blue bricks and the last of Black bricks. After finishing configuration please continue.
+
+### During Pick Up
+The server robot will always check if there is an item present at the pick up location. If there is an item present the server robot will try to sort that item among its positions. Specifically it will determine if the color of the brick is either Green, Yellow or Red. If it is not the brick will once again be placed in the pick-up zone. Since the brick could not be sorted by the server robot it will move out of the way and message the client robot to sort the brick instead. If the client robot cannot sort the brick the program will shut down. Otherwise the client robot will sort the brick. 
+
+After successful sorting by either the client or server robot, the server robot will get ready to pick up the next brick and the user will be notified of this. Please place the next brick in the pick up zone. If not done within the designated period of 5 seconds, the server will still attempt to pick up the item, if no item is found the robot will wait another 5 seconds and try again. When a brick is found it will be sorted as described above. This procedure will loop indefinitely. 
+
+Import note! The robot is not aware of how many brick has been sorted in each position and will assume that a brick is removed from the sorting location after sorting. I.e., if sorting two red bricks in a row the robot might attempt to crush the first brick if it is not moved out of the way. 
+
+### Shut Down
+It is simple to shut down the procedure, please shut down the robots using the EV3 Hub as described in the documentation or cancel the debugging session started in VSCode (if VSCode is used).
 
 ## Features
 
