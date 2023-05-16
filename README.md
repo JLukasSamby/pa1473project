@@ -68,7 +68,17 @@ bluetooth which can be done in their corresponding ev3 hub menus. See https://py
 
 
 ## Program description
-The program is split into two files. If observing the robots from the south with the arm south and ev3 hub north, then the western robot is the client and the eastern is the server. 
+The purpose of the program is to sort large 2x2 lego bricks (Lego brick 3003) of different colors {Black, Blue, Green, Red, Yellow}. This is done by configuring zones where to sort
+the different bricks using two connected robot arms. The two Robot arms should be connected through bluetooth via the EV3 Hub interface. 
+
+The program is split into two files. If observing the robots from the south with the arm south and ev3 hub north, then the western robot is the client and the eastern is the server.
+The client should run the `sorter_client.py` file and the server should run the `sorter_server.py` file. The server will handle Green, Red and Yellow bricks and the client
+Black and Blue bricks. 
+
+When starting the programs the robots will attempt to connect to each other. If successful they will both proceed with an initialization procedure. After the initialization is done,
+3 zones must be configured for both robots and then placing a brick inbetween the robots should have them sort the brick together (if the brick is Green, Red or Yellow the server will
+sort it, and otherwise the client will be told to sort it). When a brick is sorted the server will prompt the user that it is `waiting for next brick`, please place a new brick to
+continue sorting, or nothing to cancel the sorting procedure.
     
 
 ## Building and running
