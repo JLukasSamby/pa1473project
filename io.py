@@ -15,7 +15,8 @@ from robot_setup import(rotationMotor,
                         clawMotor,
                         screen,
                         speaker,
-                        buttons)
+                        buttons,
+                        ev3)
 from pybricks.parameters import Button
 from pybricks.tools import wait
 
