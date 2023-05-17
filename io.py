@@ -17,7 +17,7 @@ from robot_setup import(rotationMotor,
                         speaker,
                         buttons)
 from pybricks.parameters import Button
-from core import hold
+from pybricks.tools import wait
 
 
 def notify(message: str) -> None:
@@ -68,7 +68,7 @@ def configure_height_and_angle_positions() -> tuple:
             rotationMotor.run(-VERY_HIGH_SPEED)
         else:
             rotationMotor.hold()
-        hold(CHECK_INTERVAL_IN_MILLISECONDS)
+        wait(CHECK_INTERVAL_IN_MILLISECONDS)
 
     craneMotor.run_target(HIGH_SPEED, -CRANE_GEAR_RATIO * CRANE_RESTING_HIGH_ANGLE)
     rotationMotor.run_target(VERY_HIGH_SPEED, initial_rotation)
