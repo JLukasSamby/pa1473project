@@ -28,7 +28,7 @@ def _close_claw() -> None:
     """
     clawMotor.run_until_stalled(-HIGH_SPEED, then=Stop.HOLD, duty_limit=MAX_DUTY * 0.8)
 
-def _pick_stalled() -> None:
+def pick_stalled() -> None:
     """
     Drop item using run_until_stalled.
     """
@@ -39,7 +39,7 @@ def _pick_stalled() -> None:
     _close_claw()
     craneMotor.run_target(HIGH_SPEED, 0)
 
-def _pick_height(height: float) -> None:
+def pick_height(height: float) -> None:
     """
     Drop item using preconfigured height.
     
